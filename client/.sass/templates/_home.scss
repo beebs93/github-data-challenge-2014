@@ -1,0 +1,212 @@
+.t-home{
+	height: 100%;
+
+	.wrapper{
+		height: 100%;
+	}
+
+	.control-panel{
+		.filter-col{
+			height: 100%;
+			padding: 1em;
+			@include box-shadow(0 0 3em 0.25em #fff);
+			background: rgba(#fff, 0.9);
+			position: absolute;
+			top: 0;
+			z-index: 2;
+			overflow: scroll;
+		}
+
+		.filter-col:first-of-type{
+			left: 0;
+		}
+
+		.filter-col:last-of-type{
+			right: 0;
+		}
+
+		.global-lang-filters{
+			@extend %clearfix;
+		}
+
+		.global-lang-filter{
+			width: 50%;
+			padding: 0.4em 0;
+			background: #fff;
+			display: inline-block;
+			font-size: 1.5rem;
+			text-align: center;
+		}
+
+		.lang-buttons{
+			margin-top: 1em;
+			clear: both;
+
+			li{
+				margin: 0.5em 0 0;
+				padding: 0.5em;
+				border: 1px solid #000;
+				background: #fff;
+				display: block;
+				cursor: pointer;
+				@include opacity(0);
+				@include transition(opacity 750ms linear);
+			}
+
+			li:first-child{
+				margin-top: 0;
+			}
+
+			li.added{
+				@include opacity(1);
+			}
+
+			li.active-filter{
+				background: #000;
+				color: #fff;
+			}
+		}
+
+		.remote-control{
+			padding: 0.25em 0.5em;
+			@include box-shadow(0 0 1em 0.25em #e6e4e4);
+			background: #fff;
+			float: left;
+			position: absolute;
+			top: 0.75em;
+			left: 50%;
+			@include transform(translateX(-50%));
+			z-index: 2;
+
+			.control-button{
+				display: none;
+				font-size: 1.25em;
+			}
+
+			.control-button.active-button{
+				display: block;
+			}
+		}
+
+		.words-filter{
+			li{
+				margin-top: 0.25em;
+				display: block;
+				line-height: 1;
+				cursor: pointer;
+			}
+		}
+	}
+
+	.stage{
+		max-width: 1000px;
+		height: 100%;
+		margin: 0 auto;
+		position: relative;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		overflow: hidden;
+	}
+
+	.actor{
+		@extend %anti-flicker;
+		visibility: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+		@include transition(opacity 350ms linear);
+
+		.actor-inner{
+			padding: 1em;
+			border: 1px solid #000;
+			background: #fff;
+			@include transition(border 350ms linear);
+		}
+
+		.actor-inner.layer-1{
+			font-size: 0.75rem;
+		}
+
+		.actor-inner.layer-2{
+			font-size: 1rem;
+		}
+
+		.actor-inner.layer-3{
+			font-size: 1.25rem;
+		}
+
+		.actor-meta-outer{
+			margin-top: 0.6em;
+			display: none;
+		}
+
+		.actor-meta{
+			margin-top: 0.3em;
+			display: block;
+			font-size: 0.75em;
+		}
+
+		.actor-meta:first-child{
+			margin-top: 0;
+		}
+
+		.repo-langs{
+			font-style: italic;
+		}
+
+		.actor-meta-link{
+			text-decoration: underline;
+		}
+
+		.actor-meta-link:hover{
+			text-decoration: none;
+		}
+	}
+
+	.actor.actor-positioned{
+		visibility: visible;
+	}
+
+	.actor.filter-match{
+		@include opacity(0);
+	}
+}
+
+.t-home.inspection-mode{
+	.control-panel{
+		.filter-col{
+			height: auto;
+			overflow: auto;
+		}
+	}
+
+	.stage{
+		height: auto;
+		padding-top: 4em;
+		padding-bottom: 2em;
+		overflow: visible;
+
+		.actor{
+			margin: 0.5em 0 0;
+			position: static;
+			@include transform(translateY(0) !important);
+
+			.actor-inner{
+				font-size: 1.5rem !important;
+			}
+
+			.event-word{
+				font-weight: $fontWeightBold;
+			}
+
+			.actor-meta-outer{
+				display: block;
+			}
+		}
+
+		.actor.filter-match{
+			display: none;
+		}
+	}
+}

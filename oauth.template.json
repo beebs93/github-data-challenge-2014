@@ -1,0 +1,10 @@
+{
+	"default": {
+		"github": {
+			"oauth": {
+				"clientId": "ENTER_YOUR_CLIENT_ID",
+				"clientSecret": "ENTER_YOUR_CLIENT_SECRET"
+			}
+		}
+	}
+}

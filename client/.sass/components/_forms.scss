@@ -1,0 +1,63 @@
+::-ms-clear{
+	/* Remove IE 10 "x" clear button in input fields */
+	display: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{
+	/* Remove Webkit number buttons for number input fields */
+	@include appearance(none);
+    margin: 0;
+}
+
+label{
+	
+}
+
+input[type="checkbox"] + label,
+input[type="radio"] + label{
+	
+}
+
+input,
+textarea,
+select{
+	
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea{
+	padding: 0.25em 0.5em;
+	border: 1px solid #000;
+	outline: none;
+}
+
+label + input[type="text"],
+label + input[type="email"],
+label + input[type="tel"],
+label + select,
+label + textarea{
+	
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"]{
+	
+}
+
+input[type="checkbox"],
+input[type="radio"]{
+	
+}
+
+textarea{
+
+}
+
+select{
+
+}

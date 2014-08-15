@@ -1,0 +1,70 @@
+html{
+	font: #{$baseFontSize}/#{$baseLineHeight} $baseFontStack;
+	font-weight: $baseFontWeight;
+}
+
+body{
+	color: $baseFontColor;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+	margin: 0;
+	padding: 0;
+	display: block;
+	font-family: $baseFontStack;
+	font-weight: $baseFontWeight;
+	color: $baseFontColor;
+}
+
+a{
+	text-decoration: none;
+	color: $baseFontColor;
+}
+
+a:hover{
+	
+}
+
+.no-touch a:hover{
+	
+}
+
+a:focus{
+	
+}
+
+.no-touch a:focus{
+	
+}
+
+p{
+	margin: 0;
+}
+
+pre{
+	margin: 0;
+	font-family: monospace;
+}
+
+ul,
+li,
+ul li,
+ol li,
+ul ul,
+ol ol{
+	margin: 0;
+	padding: 0;
+}
+
+ul, ol{
+	list-style: none;	
+}
+
+ul li, ol li{
+	list-style-type: none;	
+}

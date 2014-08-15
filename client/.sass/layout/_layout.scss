@@ -1,0 +1,36 @@
+*{
+	@include box-sizing(border-box);
+}
+
+*:focus{
+	outline: none;
+}
+
+html,
+body,
+.wrapper{
+	
+}
+
+html{
+	height: 100%;
+}
+
+body{
+	margin: 0;
+	padding: 0;
+	background: $baseBodyBgColor;
+}
+
+.wrapper{
+	position: relative;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+img{
+	border-style: none;
+	display: block; /* IE img gap fix */
+	color: transparent;
+}

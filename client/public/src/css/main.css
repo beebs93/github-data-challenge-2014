@@ -1,0 +1,834 @@
+/*! normalize.css v2.1.3 | MIT License | git.io/normalize */
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+/**
+ * Correct `block` display not defined in IE 8/9.
+ */
+/* line 11, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 8/9.
+ */
+/* line 30, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+audio,
+canvas,
+video {
+  display: inline-block;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+/* line 41, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/**
+ * Address `[hidden]` styling not present in IE 8/9.
+ * Hide the `template` element in IE, Safari, and Firefox < 22.
+ */
+/* line 51, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+[hidden],
+template {
+  display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+/**
+ * 1. Set default font family to sans-serif.
+ * 2. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+/* line 66, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+html {
+  font-family: sans-serif;
+  /* 1 */
+  -ms-text-size-adjust: 100%;
+  /* 2 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+}
+
+/**
+ * Remove default margin.
+ */
+/* line 76, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+body {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+/**
+ * Remove the gray background color from active links in IE 10.
+ */
+/* line 88, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+a {
+  background: transparent;
+}
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+/* line 96, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+a:focus {
+  outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+/* line 104, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+a:active,
+a:hover {
+  outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+/**
+ * Address variable `h1` font-size and margin within `section` and `article`
+ * contexts in Firefox 4+, Safari 5, and Chrome.
+ */
+/* line 118, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/**
+ * Address styling not present in IE 8/9, Safari 5, and Chrome.
+ */
+/* line 127, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome.
+ */
+/* line 135, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+b,
+strong {
+  font-weight: bold;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+/* line 144, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+dfn {
+  font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ */
+/* line 152, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+/**
+ * Address styling not present in IE 8/9.
+ */
+/* line 162, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+/**
+ * Correct font family set oddly in Safari 5 and Chrome.
+ */
+/* line 171, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, serif;
+  font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+/* line 183, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+pre {
+  white-space: pre-wrap;
+}
+
+/**
+ * Set consistent quote types.
+ */
+/* line 191, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+q {
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+/* line 199, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+/* line 207, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* line 215, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+sup {
+  top: -0.5em;
+}
+
+/* line 219, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+sub {
+  bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+/**
+ * Remove border when inside `a` element in IE 8/9.
+ */
+/* line 231, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+img {
+  border: 0;
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+/* line 239, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+/**
+ * Address margin not present in IE 8/9 and Safari 5.
+ */
+/* line 251, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+figure {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+/**
+ * Define consistent border, margin, and padding.
+ */
+/* line 263, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct `color` not being inherited in IE 8/9.
+ * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ */
+/* line 274, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+legend {
+  border: 0;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/**
+ * 1. Correct font family not being inherited in all browsers.
+ * 2. Correct font size not being inherited in all browsers.
+ * 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome.
+ */
+/* line 285, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+  font-size: 100%;
+  /* 2 */
+  margin: 0;
+  /* 3 */
+}
+
+/**
+ * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+/* line 299, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+button,
+input {
+  line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+/* line 311, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+button,
+select {
+  text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ */
+/* line 324, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  /* 2 */
+  cursor: pointer;
+  /* 3 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+/* line 336, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to `content-box` in IE 8/9/10.
+ * 2. Remove excess padding in IE 8/9/10.
+ */
+/* line 346, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+/* line 358, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  /* 2 */
+  box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+/* line 370, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 4+.
+ */
+/* line 379, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+/* line 390, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+textarea {
+  overflow: auto;
+  /* 1 */
+  vertical-align: top;
+  /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+/**
+ * Remove most spacing between table cells.
+ */
+/* line 403, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/vendors/_normalize.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 26, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_placeholders.scss */
+.t-home .control-panel .global-lang-filters:before,
+.t-home .control-panel .global-lang-filters:after {
+  content: "";
+  display: table;
+}
+
+/* line 32, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_placeholders.scss */
+.t-home .control-panel .global-lang-filters:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* line 40, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_placeholders.scss */
+.t-home .actor {
+  -moz-backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -moz-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+/* line 45, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_placeholders.scss */
+.btn {
+  display: inline-block;
+}
+
+@-webkit-keyframes load {
+  /* line 2, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes load {
+  /* line 2, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes load {
+  /* line 2, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load {
+  /* line 2, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+/* line 1, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+html {
+  font: 16px/1.25 Arial, Helvetica, sans-serif;
+  font-weight: 500;
+}
+
+/* line 6, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+body {
+  color: black;
+}
+
+/* line 10, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  color: black;
+}
+
+/* line 24, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+a {
+  text-decoration: none;
+  color: black;
+}
+
+/* line 45, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+p {
+  margin: 0;
+}
+
+/* line 49, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+pre {
+  margin: 0;
+  font-family: monospace;
+}
+
+/* line 54, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+ul,
+li,
+ul li,
+ol li,
+ul ul,
+ol ol {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 64, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+ul, ol {
+  list-style: none;
+}
+
+/* line 68, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/base/_typography.scss */
+ul li, ol li {
+  list-style-type: none;
+}
+
+/* line 1, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/layout/_layout.scss */
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 5, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/layout/_layout.scss */
+*:focus {
+  outline: none;
+}
+
+/* line 15, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/layout/_layout.scss */
+html {
+  height: 100%;
+}
+
+/* line 19, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/layout/_layout.scss */
+body {
+  margin: 0;
+  padding: 0;
+  background: white;
+}
+
+/* line 25, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/layout/_layout.scss */
+.wrapper {
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* line 32, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/layout/_layout.scss */
+img {
+  border-style: none;
+  display: block;
+  /* IE img gap fix */
+  color: transparent;
+}
+
+/* line 1, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/components/_forms.scss */
+::-ms-clear {
+  /* Remove IE 10 "x" clear button in input fields */
+  display: none;
+}
+
+/* line 6, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/components/_forms.scss */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  /* Remove Webkit number buttons for number input fields */
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* line 28, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/components/_forms.scss */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  padding: 0.25em 0.5em;
+  border: 1px solid #000;
+  outline: none;
+}
+
+/* line 1, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home {
+  height: 100%;
+}
+/* line 4, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .wrapper {
+  height: 100%;
+}
+/* line 9, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .filter-col {
+  height: 100%;
+  padding: 1em;
+  -moz-box-shadow: 0 0 3em 0.25em white;
+  -webkit-box-shadow: 0 0 3em 0.25em white;
+  box-shadow: 0 0 3em 0.25em white;
+  background: rgba(255, 255, 255, 0.9);
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  overflow: scroll;
+}
+/* line 20, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .filter-col:first-of-type {
+  left: 0;
+}
+/* line 24, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .filter-col:last-of-type {
+  right: 0;
+}
+/* line 32, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .global-lang-filter {
+  width: 50%;
+  padding: 0.4em 0;
+  background: #fff;
+  display: inline-block;
+  font-size: 1.5rem;
+  text-align: center;
+}
+/* line 41, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .lang-buttons {
+  margin-top: 1em;
+  clear: both;
+}
+/* line 45, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .lang-buttons li {
+  margin: 0.5em 0 0;
+  padding: 0.5em;
+  border: 1px solid #000;
+  background: #fff;
+  display: block;
+  cursor: pointer;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  -moz-transition: opacity 750ms linear;
+  -o-transition: opacity 750ms linear;
+  -webkit-transition: opacity 750ms linear;
+  transition: opacity 750ms linear;
+}
+/* line 56, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .lang-buttons li:first-child {
+  margin-top: 0;
+}
+/* line 60, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .lang-buttons li.added {
+  filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
+  opacity: 1;
+}
+/* line 64, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .lang-buttons li.active-filter {
+  background: #000;
+  color: #fff;
+}
+/* line 70, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .remote-control {
+  padding: 0.25em 0.5em;
+  -moz-box-shadow: 0 0 1em 0.25em #e6e4e4;
+  -webkit-box-shadow: 0 0 1em 0.25em #e6e4e4;
+  box-shadow: 0 0 1em 0.25em #e6e4e4;
+  background: #fff;
+  float: left;
+  position: absolute;
+  top: 0.75em;
+  left: 50%;
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  z-index: 2;
+}
+/* line 81, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .remote-control .control-button {
+  display: none;
+  font-size: 1.25em;
+}
+/* line 86, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .remote-control .control-button.active-button {
+  display: block;
+}
+/* line 92, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .control-panel .words-filter li {
+  margin-top: 0.25em;
+  display: block;
+  line-height: 1;
+  cursor: pointer;
+}
+/* line 101, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .stage {
+  max-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+/* line 112, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -moz-transition: opacity 350ms linear;
+  -o-transition: opacity 350ms linear;
+  -webkit-transition: opacity 350ms linear;
+  transition: opacity 350ms linear;
+}
+/* line 120, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-inner {
+  padding: 1em;
+  border: 1px solid #000;
+  background: #fff;
+  -moz-transition: border 350ms linear;
+  -o-transition: border 350ms linear;
+  -webkit-transition: border 350ms linear;
+  transition: border 350ms linear;
+}
+/* line 127, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-inner.layer-1 {
+  font-size: 0.75rem;
+}
+/* line 131, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-inner.layer-2 {
+  font-size: 1rem;
+}
+/* line 135, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-inner.layer-3 {
+  font-size: 1.25rem;
+}
+/* line 139, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-meta-outer {
+  margin-top: 0.6em;
+  display: none;
+}
+/* line 144, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-meta {
+  margin-top: 0.3em;
+  display: block;
+  font-size: 0.75em;
+}
+/* line 150, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-meta:first-child {
+  margin-top: 0;
+}
+/* line 154, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .repo-langs {
+  font-style: italic;
+}
+/* line 158, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-meta-link {
+  text-decoration: underline;
+}
+/* line 162, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor .actor-meta-link:hover {
+  text-decoration: none;
+}
+/* line 167, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor.actor-positioned {
+  visibility: visible;
+}
+/* line 171, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home .actor.filter-match {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+}
+
+/* line 178, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home.inspection-mode .control-panel .filter-col {
+  height: auto;
+  overflow: auto;
+}
+/* line 184, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home.inspection-mode .stage {
+  height: auto;
+  padding-top: 4em;
+  padding-bottom: 2em;
+  overflow: visible;
+}
+/* line 190, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home.inspection-mode .stage .actor {
+  margin: 0.5em 0 0;
+  position: static;
+  -moz-transform: translateY(0) !important;
+  -ms-transform: translateY(0) !important;
+  -webkit-transform: translateY(0) !important;
+  transform: translateY(0) !important;
+}
+/* line 195, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home.inspection-mode .stage .actor .actor-inner {
+  font-size: 1.5rem !important;
+}
+/* line 199, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home.inspection-mode .stage .actor .event-word {
+  font-weight: 900;
+}
+/* line 203, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home.inspection-mode .stage .actor .actor-meta-outer {
+  display: block;
+}
+/* line 208, /Users/brad.beebe/Desktop/GitLab/github-word-drop/client/.sass/templates/_home.scss */
+.t-home.inspection-mode .stage .actor.filter-match {
+  display: none;
+}

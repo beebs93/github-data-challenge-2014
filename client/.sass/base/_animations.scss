@@ -1,0 +1,5 @@
+@include keyframes(load){
+	100%{
+		@include transform(rotate(360deg));
+	}
+}

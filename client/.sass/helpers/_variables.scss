@@ -1,0 +1,26 @@
+// Fonts
+$fontArial: Arial, Helvetica, sans-serif;
+$fontWeightLight: 400;
+$fontWeightRegular: 500;
+$fontWeightBold: 900;
+
+// Colors
+$colorGrayUI: #6d6d6d;
+
+// Base
+$baseBodyBgColor: #fff;
+$baseFontSize: 16px;
+$baseLineHeight: 1.25;
+$baseFontStack: $fontArial;
+$baseFontWeight: $fontWeightRegular;
+$baseFontColor: #000;
+
+// Breakpoints
+$mobile-wide: 500px;
+$tablet-narrow: 640px;
+$tablet: 768px;
+$laptop: 960px;
+$desktop-narrow: 1024px;
+$desktop: 1200px;
+$desktop-wide: 1190px;
+$widescreen: 1600px;

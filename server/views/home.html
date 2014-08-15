@@ -1,0 +1,67 @@
+{% extends 'layouts/default.html' %}
+
+{% block bodyClass %}t-home{% endblock %}
+
+{% block templateContent %}
+<div id="control-panel" class="control-panel">
+	<div class="filter-col">
+		<div class="global-lang-filters">
+			<a class="global-lang-filter" href="javascript:{}" data-filter-action="all">
+				<i class="fa fa-check-square-o"></i>
+			</a><a class="global-lang-filter" href="javascript:{}" data-filter-action="none">
+				<i class="fa fa-square-o"></i>
+			</a>
+		</div>
+
+		<ul id="lang-buttons" class="lang-buttons"></ul>
+	</div>
+
+	<div id="remote-control" class="remote-control">
+		<a class="control-button active-button" href="javascript:{}" data-control-action="pause"><i class="fa fa-search"></i></a>
+
+		<a class="control-button" href="javascript:{}" data-control-action="play"><i class="fa fa-play"></i></a>
+	</div>
+
+	<div class="filter-col">
+		<div class="fitler-input-field">
+			<input id="new-word-filter" name="new-word-filter" type="text" value="" placeholder="Enter a word" />
+
+			<a href="javascript:{};"><i class="fa fa-plus"></i></a>
+		</div>
+
+		<ul id="words-filter" class="words-filter"></ul>
+	</div>
+</div>
+
+<div id="stage" class="stage">
+	<div id="actor-template" class="actor">
+		<div class="actor-inner">
+			<div class="event-word"></div>
+
+			<div class="actor-meta-outer">
+				<div class="repo-langs actor-meta"></div>
+
+				<a class="event-url actor-meta actor-meta-link" href="#" target="_blank"></a>
+
+				<a class="repo-url actor-meta actor-meta-link" href="#" target="_blank"></a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block bodyEnd %}
+<script type="text/javascript">
+jQuery(function(){
+
+var app,
+	oOpts = {
+		socketUrl: url('protocol') + '://' + url('domain') + ':{{ Config.socketio.port }}',
+		tickDuration: 100
+	};
+
+app = new App(oOpts);
+
+});
+</script>
+{% endblock %}

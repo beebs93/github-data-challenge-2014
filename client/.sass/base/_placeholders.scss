@@ -1,0 +1,52 @@
+// Grid
+%block-center{
+	margin-right: auto;
+	margin-left: auto;
+	display: block;
+}
+
+%inline-block{
+	display: inline-block;
+}
+
+%inline-block-top{
+	@extend %inline-block;
+	vertical-align: top;
+}
+
+%inline-block-middle{
+	@extend %inline-block;
+	vertical-align: middle;
+}
+
+%clear{
+	clear: both;
+}
+
+%clearfix:before,
+%clearfix:after{
+	content: "";
+	display: table;
+}
+
+%clearfix:after{
+	content: "";
+	display: table;
+	clear: both;
+}
+
+
+// UI
+%anti-flicker{
+	@include backface-visibility(hidden);
+	@include transform-style(preserve-3d);
+}
+
+%btn-general{
+	display: inline-block;
+}
+
+%block-reponsive{
+	max-width: 100%;
+	height: auto;
+}
