@@ -455,6 +455,10 @@ ControlPanel.prototype = {
 		this.signal.trigger('Filter:Languages:Updated', {
 			languages: this._filters.langs
 		});
+
+		if(!this._filters.langs.length && this._flags.canAutoDisableLangs === true){
+			this._flags.canAutoDisableLangs = false;
+		}
 	},
 
 
