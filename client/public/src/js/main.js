@@ -89,6 +89,26 @@ App = function(oOpts){
 			});
 		});
 
+	this._stage.signal
+		.on('Actor:Added', function(e, oData){
+			var oActorData = oData.actorData;
+				aStats = [];
+
+			aStats.push({
+				type: 'words',
+				label: oActorData.word
+			});
+
+			_.forEach(oActorData.repo.langs, function(sLang){
+				aStats.push({
+					type: 'langs',
+					label: sLang
+				});
+			});
+
+			_this._cpanel.addStats(aStats);
+		});
+
 	this._socket
 		.on('connect_error', function(oError){
 			console.error('Could not connect to socketIO server', oError);
@@ -282,7 +302,8 @@ ControlPanel = function(){
 		$cpanel = $('#control-panel'),
 		$langButtons,
 		$rcButtons,
-		$wordFilters;
+		$wordFilters,
+		$miniStats;
 
 	if(!$cpanel || $cpanel.length !== 1){
 		console.error('Invalid control panel');
@@ -310,6 +331,14 @@ ControlPanel = function(){
 
 	if(!$wordFilters || $wordFilters.length !== 1){
 		console.error('Missing word filter container');
+
+		return;
+	}
+
+	$miniStats = $cpanel.find('#mini-stats');
+
+	if(!$miniStats || $miniStats.length !== 1){
+		console.error('Missing mini stats container');
 
 		return;
 	}
@@ -400,10 +429,15 @@ ControlPanel = function(){
 	this._$langButtons = $langButtons;
 	this._$rcButtons = $rcButtons;
 	this._$wordFilters = $wordFilters;
+	this._$miniStats = $miniStats;
 	this._buttons = {
 		langs: []
 	};
 	this._filters = {
+		langs: [],
+		words: []
+	};
+	this._stats = {
 		langs: [],
 		words: []
 	};
@@ -413,6 +447,27 @@ ControlPanel = function(){
 };
 
 ControlPanel.prototype = {
+	/**
+	 * Adds the value of the word filter input field to the word filter
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	_processWordFilterInput: function(){
+		var $input = this._$cpanel.find('#new-word-filter'),
+			sWord = $input.val().trim().toLowerCase();
+
+		$input.val('');
+
+		if(!sWord.length){
+			return;
+		}
+
+		this.addWordFilters(sWord);
+	},
+
+
 	/**
 	 * Returns the list of current language/word filters
 	 * 
@@ -630,24 +685,44 @@ ControlPanel.prototype = {
 	},
 
 
-	/**
-	 * Adds the value of the word filter input field to the word filter
-	 * 
-	 * @return void
-	 *
-	 * @author Brad Beebe
-	 */
-	_processWordFilterInput: function(){
-		var $input = this._$cpanel.find('#new-word-filter'),
-			sWord = $input.val().trim().toLowerCase();
 
-		$input.val('');
+	addStats: function(stats){
+		var _this = this,
+			aNewStats;
 
-		if(!sWord.length){
-			return;
+		if(_.isString(stats)){
+			aNewStats = [stats];
+		}else if(_.isArray(stats)){
+			aNewStats = stats;
+		}else{
+			return
 		}
 
-		this.addWordFilters(sWord);
+		_.forEach(aNewStats, function(oStatI){
+			var sKey = 'item_' + oStatI.label;
+				iIndex;
+
+			iIndex = _.findIndex(_this._stats[oStatI.type], function(oStatJ){
+				return oStatJ.label === oStatI.label;
+			});
+
+			if(iIndex !== -1){
+				_this._stats[oStatI.type][iIndex].value++;
+
+				return true;
+			}
+
+			_this._stats[oStatI.type].push({
+				label: oStatI.label,
+				value: 1
+			});
+		});
+
+		_.forIn(this._stats, function(aStats, sType){
+			_this._stats[sType] = _.sortBy(_this._stats, 'value');
+		});
+
+		// [TODO] this is broken
 	}
 };
 
@@ -675,6 +750,7 @@ Stage = function(){
 		return;
 	}
 
+	this.signal = $({});
 	this._$stage = $stage;
 	this._stageWidth = this._$stage.outerWidth();
 	this._stageHeight = this._$stage.outerHeight();
@@ -890,6 +966,10 @@ Stage.prototype = {
 				duration: iDuration,
 				easing: 'linear'
 			});
+
+		this.signal.trigger('Actor:Added', {
+			actorData: oData
+		});
 	},
 
 
