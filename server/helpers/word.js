@@ -20,12 +20,13 @@ module.exports = {
 					.replace(/[\r\n\t]/gm, ' ');
 
 		sWord = XRegExp
-					.replace(sWord, XRegExp('/[^a-z0-9_#\-\+\s\p{L}]/', 'gi'), ' ');
+					.replace(sWord, XRegExp('/[^a-z0-9_#\-\+\s\p{L}]/', 'ig'), ' ');
 
 		sWord = sWord
 					.replace(/\\n/g, ' ')
 					.replace(/_/g, ' ')
-					.replace(/\s{2,}/g, ' ');
+					.replace(/\s{2,}/g, ' ')
+					.replace(/(<([^>]+)>)/ig, '');
 
 		return sWord;
 	},
