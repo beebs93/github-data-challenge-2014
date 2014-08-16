@@ -16,7 +16,6 @@ module.exports = {
 		}
 
 		sWord = sWord
-					.trim()
 					.replace(/[\r\n\t]/gm, ' ');
 
 		sWord = XRegExp
@@ -26,7 +25,8 @@ module.exports = {
 					.replace(/\\n/g, ' ')
 					.replace(/_/g, ' ')
 					.replace(/\s{2,}/g, ' ')
-					.replace(/(<([^>]+)>)/ig, '');
+					.replace(/(<([^>]+)>)/ig, '')
+					.trim();
 
 		return sWord;
 	},

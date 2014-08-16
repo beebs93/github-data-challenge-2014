@@ -469,7 +469,9 @@ GithubEventHarvester.prototype = {
 				});
 
 				request(oOpts, function(err, res, body){
-					var oResp;
+					var oResp,
+						iLangsTotal,
+						aLangs = [];
 
 					if(err){
 						fnCallback(err, null);
@@ -491,7 +493,25 @@ GithubEventHarvester.prototype = {
 						return;
 					}
 
-					oRepo.langs = _.sortBy(_.keys(oResp));
+					iLangsTotal = _.reduce(_.values(oResp), function(iSum, iNum){
+						return iSum + iNum;
+					});
+
+					if(iLangsTotal === 0){
+						fnCallback(null, oRepo);
+
+						return;
+					}
+
+					_.forIn(oResp, function(iTotal, sLang){
+						if((iTotal / iLangsTotal) * 100 < 10){
+							return true;
+						}
+
+						aLangs.push(sLang);
+					});
+
+					oRepo.langs = _.sortBy(aLangs);
 
 					fnCallback(null, oRepo);
 				});
