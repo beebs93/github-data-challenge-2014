@@ -89,12 +89,22 @@
 		}
 
 		.words-filter{
+			margin-bottom: 1.5em;
+
 			li{
 				margin-top: 0.25em;
 				display: block;
 				line-height: 1;
 				cursor: pointer;
 			}
+		}
+
+		.mini-stats-outer{
+
+		}
+
+		.mini-stats{
+			margin-bottom: 1.5em;
 		}
 	}
 

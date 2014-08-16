@@ -48,6 +48,7 @@ App = function(oOpts){
 	this._hopper = new Hopper();
 	this._cpanel = new ControlPanel();
 	this._stage = new Stage();
+	this._renderMiniStats = _.throttle(this._cpanel.updateStatsDisplay.bind(this._cpanel), 2500);
 	this._delays = {
 		tick: oOpts.tickDelay,
 		stats: oOpts.statsDelay
@@ -111,6 +112,8 @@ App = function(oOpts){
 			});
 
 			_this._cpanel.addStats(aStats);
+
+			_this._renderMiniStats();
 		});
 
 	this._socket
@@ -339,7 +342,7 @@ ControlPanel = function(){
 		return;
 	}
 
-	$miniStats = $cpanel.find('#mini-stats');
+	$miniStats = $cpanel.find('#mini-stats-outer');
 
 	if(!$miniStats || $miniStats.length !== 1){
 		console.error('Missing mini stats container');
@@ -703,11 +706,21 @@ ControlPanel.prototype = {
 		}
 
 		_.forEach(aNewStats, function(oStatI){
-			var sKey = 'item_' + oStatI.label,
+			var sLabel,
 				iIndex;
 
+			sLabel = oStatI.label
+						.replace(/[^a-z0-9_#'"\-\/]/ig, '')
+						.replace(/^'|^"|^/, '')
+						.replace(/'$|"$/, '')
+						.trim();
+
+			if(!sLabel.length){
+				return true;
+			}
+
 			iIndex = _.findIndex(_this._stats[oStatI.type], function(oStatJ){
-				return oStatJ.label === oStatI.label;
+				return oStatJ.label === sLabel;
 			});
 
 			if(iIndex !== -1){
@@ -717,13 +730,56 @@ ControlPanel.prototype = {
 			}
 
 			_this._stats[oStatI.type].push({
-				label: oStatI.label,
+				label: sLabel,
 				value: 1
 			});
 		});
 
 		_.forIn(this._stats, function(aStats, sType){
-			_this._stats[sType] = _.sortBy(_this._stats[sType], 'value');
+			_this._stats[sType] = _this._stats[sType].sort(function(a, b){
+				if(a.value < b.value){
+					return 1;
+				}
+
+				if(a.value > b.value){
+					return -1;
+				}
+
+				return 0;
+			});
+		});
+	},
+
+
+
+	updateStatsDisplay: function(){
+		var _this = this,
+			aStats = [],
+			aWordStats,
+			iTotalWords;
+
+		aStats.push({
+			type: 'langs',
+			title: 'Top 10 Repo Languages',
+			stats: this._stats.langs.slice(0, 10)
+		});
+
+		aStats.push({
+			type: 'words',
+			title: 'Top 20 Words',
+			stats: this._stats.words.slice(0, 20)
+		});
+
+		_.forEach(aStats, function(oStatsInfo){
+			var $stats = _this._$miniStats.find('#top-' + oStatsInfo.type);
+
+			$stats
+				.empty()
+				.append('<li>' + oStatsInfo.title + '</li>');
+
+			_.forEach(oStatsInfo.stats, function(oStat){
+				$stats.append('<li>' + oStat.label + ': ' + oStat.value + '</li>');
+			});
 		});
 	}
 };
