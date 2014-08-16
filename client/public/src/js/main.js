@@ -99,6 +99,7 @@ App = function(oOpts){
 			var oActorData = oData.actorData,
 				aStats = [];
 
+			// [TODO reduce DRY]
 			aStats.push({
 				type: 'words',
 				label: oActorData.word
@@ -112,6 +113,26 @@ App = function(oOpts){
 			});
 
 			_this._cpanel.addStats(aStats);
+
+			_this._renderMiniStats();
+		}).
+		on('Actor:Freed', function(e, oData){
+			var oActorData = oData.actorData,
+				aStats = [];
+
+			aStats.push({
+				type: 'words',
+				label: oActorData.word
+			});
+
+			_.forEach(oActorData.repo.langs, function(sLang){
+				aStats.push({
+					type: 'langs',
+					label: sLang
+				});
+			});
+
+			_this._cpanel.removeStats(aStats);
 
 			_this._renderMiniStats();
 		});
@@ -695,20 +716,21 @@ ControlPanel.prototype = {
 
 	addStats: function(stats){
 		var _this = this,
-			aNewStats;
+			aStats2Add;
 
 		if(_.isString(stats)){
-			aNewStats = [stats];
+			aStats2Add = [stats];
 		}else if(_.isArray(stats)){
-			aNewStats = stats;
+			aStats2Add = stats;
 		}else{
-			return
+			return;
 		}
 
-		_.forEach(aNewStats, function(oStatI){
+		_.forEach(aStats2Add, function(oStatI){
 			var sLabel,
 				iIndex;
 
+			// [TODO reduce DRY]
 			sLabel = oStatI.label
 						.replace(/[^a-z0-9_#'"\-\/]/ig, '')
 						.replace(/^'|^"|^/, '')
@@ -733,6 +755,57 @@ ControlPanel.prototype = {
 				label: sLabel,
 				value: 1
 			});
+		});
+
+		// [TODO reduce DRY]
+		_.forIn(this._stats, function(aStats, sType){
+			_this._stats[sType] = _this._stats[sType].sort(function(a, b){
+				if(a.value < b.value){
+					return 1;
+				}
+
+				if(a.value > b.value){
+					return -1;
+				}
+
+				return 0;
+			});
+		});
+	},
+
+
+
+	removeStats: function(stats){
+		var _this = this,
+			aStats2Remove;
+
+		if(_.isString(stats)){
+			aStats2Remove = [stats];
+		}else if(_.isArray(stats)){
+			aStats2Remove = stats;
+		}else{
+			return;
+		}
+
+		_.forEach(aStats2Remove, function(oStatI){
+			var sLabel,
+				iIndex;
+
+			sLabel = oStatI.label
+						.replace(/[^a-z0-9_#'"\-\/]/ig, '')
+						.replace(/^'|^"|^/, '')
+						.replace(/'$|"$/, '')
+						.trim();
+
+			iIndex = _.findIndex(_this._stats[oStatI.type], function(oStatJ){
+				return oStatJ.label === sLabel;
+			});
+
+			if(iIndex !== -1){
+				_this._stats[oStatI.type][iIndex].value--;
+
+				return true;
+			}
 		});
 
 		_.forIn(this._stats, function(aStats, sType){
@@ -937,7 +1010,8 @@ Stage.prototype = {
 	addActor: function(oData, oOpts){
 		oOpts = oOpts || {};
 
-		var oFilters = oOpts.filters || {},
+		var _this = this,
+			oFilters = oOpts.filters || {},
 			aLangFilters = oFilters.langs || [],
 			aWordFilters = oFilters.words || [],
 			iLayerIndex,
@@ -1016,6 +1090,10 @@ Stage.prototype = {
 			},{
 				complete: function(){
 					$actor._isFree = true;
+
+					_this.signal.trigger('Actor:Freed', {
+						actorData: oData
+					});
 				},
 				duration: iDuration,
 				easing: 'linear'
