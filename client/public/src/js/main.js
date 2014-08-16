@@ -48,9 +48,13 @@ App = function(oOpts){
 	this._hopper = new Hopper();
 	this._cpanel = new ControlPanel();
 	this._stage = new Stage();
-	this._tickDuration = oOpts.tickDuration;
+	this._delays = {
+		tick: oOpts.tickDelay,
+		stats: oOpts.statsDelay
+	};
 	this._timers = {
-		tick: null
+		tick: null,
+		stats: null
 	};
 
 	this._cpanel.signal
@@ -64,7 +68,7 @@ App = function(oOpts){
 				case 'play':
 					_this._hopper.keepLast(200);
 
-					_this._timers.tick = setTimeout(_this._nextTick.bind(_this), _this._tickDuration);
+					_this._timers.tick = setTimeout(_this._nextTick.bind(_this), _this._delays.tick);
 
 					_this._stage.toggleInspectionMode(false);
 
@@ -91,7 +95,7 @@ App = function(oOpts){
 
 	this._stage.signal
 		.on('Actor:Added', function(e, oData){
-			var oActorData = oData.actorData;
+			var oActorData = oData.actorData,
 				aStats = [];
 
 			aStats.push({
@@ -155,7 +159,7 @@ App.prototype = {
 		}
 
 		if(!oActorData || !oActorData.word){
-			this._timers.tick = setTimeout(this._nextTick.bind(this), this._tickDuration);
+			this._timers.tick = setTimeout(this._nextTick.bind(this), this._delays.tick);
 
 			return;
 		}
@@ -185,7 +189,7 @@ App.prototype = {
 			filters: this._cpanel.getFilters()
 		});
 
-		this._timers.tick = setTimeout(this._nextTick.bind(this), this._tickDuration);
+		this._timers.tick = setTimeout(this._nextTick.bind(this), this._delays.tick);
 	}
 };
 
@@ -699,7 +703,7 @@ ControlPanel.prototype = {
 		}
 
 		_.forEach(aNewStats, function(oStatI){
-			var sKey = 'item_' + oStatI.label;
+			var sKey = 'item_' + oStatI.label,
 				iIndex;
 
 			iIndex = _.findIndex(_this._stats[oStatI.type], function(oStatJ){
@@ -719,10 +723,8 @@ ControlPanel.prototype = {
 		});
 
 		_.forIn(this._stats, function(aStats, sType){
-			_this._stats[sType] = _.sortBy(_this._stats, 'value');
+			_this._stats[sType] = _.sortBy(_this._stats[sType], 'value');
 		});
-
-		// [TODO] this is broken
 	}
 };
 
@@ -958,10 +960,6 @@ Stage.prototype = {
 			},{
 				complete: function(){
 					$actor._isFree = true;
-
-					if(_.isFunction(oOpts.onAnimationEnd)){
-						oOpts.onAnimationEnd.apply(undefined, [oData]);
-					}
 				},
 				duration: iDuration,
 				easing: 'linear'

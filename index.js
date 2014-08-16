@@ -43,6 +43,7 @@ app.use(function(req, res, next){
 
 	_.merge(app.locals, {
 		Config: {
+			isDebug: req.query.debug === '1',
 			socketio: {
 				port: config.servers.socketio.port
 			},

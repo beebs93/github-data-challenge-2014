@@ -63,7 +63,8 @@ jQuery(function(){
 var app,
 	oOpts = {
 		socketUrl: url('protocol') + '://' + url('domain') + ':{{ Config.socketio.port }}',
-		tickDuration: 100
+		statsDelay: 2500,
+		tickDelay: 100
 	};
 
 app = new App(oOpts);
