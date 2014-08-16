@@ -1,7 +1,7 @@
 var path = require('path'),
 	sAppDir = path.dirname(require.main.filename),
 	_ = require('lodash'),
-	oauth = require(sAppDir + '/oauth.json'),
+	oauth,
 	config;
 
 
@@ -90,6 +90,15 @@ switch(process.env.NODE_ENV){
 
 		break;
 };
+
+try{
+	oauth = require(sAppDir + '/oauth.json');
+}
+catch(err){
+	console.error('**********************\n"' + sAppDir + '/oauth.json" file not found.\nPlease review the README.md file for installation instructions.\n**********************');
+
+	process.exit();
+}
 
 _.merge(config, oauth[process.env.NODE_ENV]);
 
