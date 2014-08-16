@@ -20,9 +20,9 @@ npm install
 Get Started (Local Environment)
 --------------
 
-- Make a copy of the `oauth.template.json` file and save it as `oauth.json`
-
 - Register a new [GitHub OAuth application](https://github.com/settings/applications/new)
+
+- Make a copy of the `oauth.template.json` file and save it as `oauth.json`
 
 - Edit the `oauth.json` file then add your new app's client ID and secret as indicated
 
