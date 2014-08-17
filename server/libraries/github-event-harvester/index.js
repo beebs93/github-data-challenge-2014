@@ -10,6 +10,15 @@ var path = require('path'),
 	redisDb = require(sAppDir + '/server/system/redis-db'),
 	wordHelper = require(sAppDir + '/server/helpers/word');
 
+
+/**
+ * Collects, processes and temporarily stores specific types of GitHub
+ * events from the main /events API endpoint. Any pertinent copy from
+ * the event's metadata are processed into "word events" that are stored
+ * temporarily into Redis and also sent through the main event emitter.
+ *
+ * @author Brad Beebe
+ */
 function GithubEventHarvester(){
 	this.settings = {
 		api: {
