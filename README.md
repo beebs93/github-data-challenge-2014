@@ -38,7 +38,7 @@ npm install -g redis-server
 redis-server
 ```
 
-- Navigate to the directory where you cloned the repo in the previous Terminal window and start up the server
+- Navigate to the directory where you cloned the repo in the previous Terminal window and start the node server
 
 ```sh
 node index.js
