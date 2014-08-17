@@ -3,7 +3,7 @@ var _ = require('lodash'),
 
 module.exports = {
 	/**
-	 * Strips out any unsavory characters from a string
+	 * Flattens then strips out any unwanted characters from a string
 	 * 
 	 * @param  string sWord
 	 * @return string
