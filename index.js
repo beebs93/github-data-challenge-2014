@@ -77,7 +77,10 @@ io.on('connection', function(socket){
 				if(err){
 					aKeys = [];
 				}
-
+				
+				// We grab just enough recent word events so that by
+				// the time they are done processing the latest harvest
+				// iteration will have seeded new ones
 				aKeys = aKeys.slice(0, 25);
 
 				fnCallbackI(null, aKeys);
