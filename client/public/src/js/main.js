@@ -69,9 +69,11 @@ App = function(oOpts){
 				case 'play':
 					_this._hopper.keepLast(200);
 
-					_this._timers.tick = setTimeout(_this._nextTick.bind(_this), _this._delays.tick);
+					_this._cpanel.clearStats();
 
 					_this._stage.toggleInspectionMode(false);
+
+					_this._nextTick();
 
 					break;
 
@@ -144,10 +146,16 @@ App = function(oOpts){
 		.on('connect', function(){
 			var aWordFilters = [
 					'and',
+					'are',
 					'for',
+					'from',
 					'of',
 					'that',
-					'the'
+					'the',
+					'this',
+					'with',
+					'use',
+					'you'
 				];
 
 			console.info('SocketIO connected');
@@ -496,6 +504,52 @@ ControlPanel.prototype = {
 	},
 
 
+
+	_toStatLabel: function(string){
+		var sLabel;
+
+		if(!_.isString(string)){
+			return;
+		}
+
+		sLabel = string
+					.replace(/[^a-z0-9_#'"\+\-\/]/ig, '')
+					.replace(/^'|^"|^/, '')
+					.replace(/'$|"$/, '')
+					.trim();
+
+		if(sLabel.length < 3 || !sLabel.replace(/\d+/g, '').length){
+			return '';
+		}
+
+		return sLabel;
+	},
+
+
+
+	_sortStats: function(){
+		var _this = this;
+
+		_.forIn(this._stats, function(aStats, sType){
+			_this._stats[sType] = _.filter(_this._stats[sType], function(oStat){
+				return oStat.value > 0;
+			});
+
+			_this._stats[sType] = _this._stats[sType].sort(function(a, b){
+				if(a.value < b.value){
+					return 1;
+				}
+
+				if(a.value > b.value){
+					return -1;
+				}
+
+				return 0;
+			});
+		});
+	},
+
+
 	/**
 	 * Returns the list of current language/word filters
 	 * 
@@ -730,12 +784,7 @@ ControlPanel.prototype = {
 			var sLabel,
 				iIndex;
 
-			// [TODO reduce DRY]
-			sLabel = oStatI.label
-						.replace(/[^a-z0-9_#'"\-\/]/ig, '')
-						.replace(/^'|^"|^/, '')
-						.replace(/'$|"$/, '')
-						.trim();
+			sLabel = _this._toStatLabel(oStatI.label);
 
 			if(!sLabel.length){
 				return true;
@@ -757,20 +806,7 @@ ControlPanel.prototype = {
 			});
 		});
 
-		// [TODO reduce DRY]
-		_.forIn(this._stats, function(aStats, sType){
-			_this._stats[sType] = _this._stats[sType].sort(function(a, b){
-				if(a.value < b.value){
-					return 1;
-				}
-
-				if(a.value > b.value){
-					return -1;
-				}
-
-				return 0;
-			});
-		});
+		this._sortStats();
 	},
 
 
@@ -791,11 +827,11 @@ ControlPanel.prototype = {
 			var sLabel,
 				iIndex;
 
-			sLabel = oStatI.label
-						.replace(/[^a-z0-9_#'"\-\/]/ig, '')
-						.replace(/^'|^"|^/, '')
-						.replace(/'$|"$/, '')
-						.trim();
+			sLabel = _this._toStatLabel(oStatI.label);
+
+			if(!sLabel.length){
+				return true;
+			}
 
 			iIndex = _.findIndex(_this._stats[oStatI.type], function(oStatJ){
 				return oStatJ.label === sLabel;
@@ -808,18 +844,16 @@ ControlPanel.prototype = {
 			}
 		});
 
+		this._sortStats();
+	},
+
+
+
+	clearStats: function(){
+		var _this = this;
+
 		_.forIn(this._stats, function(aStats, sType){
-			_this._stats[sType] = _this._stats[sType].sort(function(a, b){
-				if(a.value < b.value){
-					return 1;
-				}
-
-				if(a.value > b.value){
-					return -1;
-				}
-
-				return 0;
-			});
+			_this._stats[sType] = [];
 		});
 	},
 
@@ -827,20 +861,21 @@ ControlPanel.prototype = {
 
 	updateStatsDisplay: function(){
 		var _this = this,
+			aAllStats,
 			aStats = [],
 			aWordStats,
 			iTotalWords;
 
 		aStats.push({
 			type: 'langs',
-			title: 'Top 10 Repo Languages',
+			title: 'Top 10 Current Languages',
 			stats: this._stats.langs.slice(0, 10)
 		});
 
 		aStats.push({
 			type: 'words',
-			title: 'Top 20 Words',
-			stats: this._stats.words.slice(0, 20)
+			title: 'Top 10 Current Words',
+			stats: this._stats.words.slice(0, 10)
 		});
 
 		_.forEach(aStats, function(oStatsInfo){
@@ -986,13 +1021,13 @@ Stage.prototype = {
 		$actor
 			.velocity({
 				translateY: -iHeight
-			},{
-				duration: 0,
-				easing: 'linear'
+			}, {
+				duration: 0
 			})
 			.css({
 				left: _.random(0, (this._stageWidth - iWidth)),
-				zIndex: zIndex
+				zIndex: zIndex,
+				transform: ''
 			});
 	},
 
@@ -1086,7 +1121,7 @@ Stage.prototype = {
 		$actor
 			.addClass('actor-positioned')
 			.velocity({
-				translateY: (this._stageHeight + $actor.outerHeight())
+				translateY: (this._stageHeight + ($actor.outerHeight() * 2))
 			},{
 				complete: function(){
 					$actor._isFree = true;
