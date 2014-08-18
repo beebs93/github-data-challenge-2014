@@ -415,14 +415,15 @@ table {
 }
 
 /* line 26, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/base/_placeholders.scss */
-.t-home .control-panel .global-lang-filters:before,
-.t-home .control-panel .global-lang-filters:after {
+.t-home .control-panel .global-lang-filters:before, .t-home .control-panel .mini-stats-outer:before,
+.t-home .control-panel .global-lang-filters:after,
+.t-home .control-panel .mini-stats-outer:after {
   content: "";
   display: table;
 }
 
 /* line 32, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/base/_placeholders.scss */
-.t-home .control-panel .global-lang-filters:after {
+.t-home .control-panel .global-lang-filters:after, .t-home .control-panel .mini-stats-outer:after {
   content: "";
   display: table;
   clear: both;
@@ -723,7 +724,38 @@ textarea {
   min-height: 13.75em;
   margin-bottom: 1.5em;
 }
-/* line 112, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 111, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+.t-home .control-panel .stat-item {
+  margin-top: 0.25em;
+  padding: 0.15em 0.25em;
+  border: 1px solid #000;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+/* line 121, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+.t-home .control-panel .stat-item:first-child {
+  margin-top: 0;
+}
+/* line 129, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+.t-home .control-panel .stat-label {
+  max-width: 10em;
+  overflow: hidden;
+  line-height: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* line 137, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+.t-home .control-panel .stat-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.15);
+}
+/* line 147, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .stage {
   max-width: 1000px;
   height: 100%;
@@ -734,7 +766,7 @@ textarea {
   z-index: 1;
   overflow: hidden;
 }
-/* line 123, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 158, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor {
   visibility: hidden;
   position: absolute;
@@ -745,7 +777,7 @@ textarea {
   -webkit-transition: opacity 350ms linear;
   transition: opacity 350ms linear;
 }
-/* line 131, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 166, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-inner {
   padding: 1em;
   border: 1px solid #000;
@@ -755,72 +787,68 @@ textarea {
   -webkit-transition: border 350ms linear;
   transition: border 350ms linear;
 }
-/* line 138, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 173, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-inner.layer-1 {
   font-size: 0.75rem;
 }
-/* line 142, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 177, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-inner.layer-2 {
   font-size: 1rem;
 }
-/* line 146, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 181, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-inner.layer-3 {
   font-size: 1.25rem;
 }
-/* line 150, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 185, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-meta-outer {
   margin-top: 0.6em;
   display: none;
 }
-/* line 155, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 190, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-meta {
   margin-top: 0.3em;
   display: block;
   font-size: 0.75em;
 }
-/* line 161, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 196, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-meta:first-child {
   margin-top: 0;
 }
-/* line 165, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 200, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .repo-langs {
   font-style: italic;
 }
-/* line 169, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 204, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-meta-link {
   text-decoration: underline;
 }
-/* line 173, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 208, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor .actor-meta-link:hover {
   text-decoration: none;
 }
-/* line 178, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 213, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor.actor-positioned {
   visibility: visible;
 }
-/* line 182, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 217, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home .actor.filter-match {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
 }
 
-/* line 189, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 224, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home.inspection-mode .control-panel .filter-col {
   height: auto;
   overflow: auto;
 }
-/* line 194, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
-.t-home.inspection-mode .control-panel .mini-stats-outer {
-  display: none;
-}
-/* line 199, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 230, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home.inspection-mode .stage {
   height: auto;
   padding-top: 4em;
   padding-bottom: 2em;
   overflow: visible;
 }
-/* line 205, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 236, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home.inspection-mode .stage .actor {
   margin: 0.5em 0 0;
   position: static;
@@ -829,19 +857,19 @@ textarea {
   -webkit-transform: translateY(0) !important;
   transform: translateY(0) !important;
 }
-/* line 210, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 241, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home.inspection-mode .stage .actor .actor-inner {
   font-size: 1.5rem !important;
 }
-/* line 214, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 245, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home.inspection-mode .stage .actor .event-word {
   font-weight: 900;
 }
-/* line 218, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 249, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home.inspection-mode .stage .actor .actor-meta-outer {
   display: block;
 }
-/* line 223, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
+/* line 254, /Users/brad.beebe/Desktop/GitHub/github-data-challenge-2014/client/.sass/templates/_home.scss */
 .t-home.inspection-mode .stage .actor.filter-match {
   display: none;
 }

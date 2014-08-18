@@ -48,7 +48,7 @@ App = function(oOpts){
 	this._hopper = new Hopper();
 	this._cpanel = new ControlPanel();
 	this._stage = new Stage();
-	this._renderMiniStats = _.throttle(this._cpanel.updateStatsView.bind(this._cpanel), 1000);
+	this.renderMiniStats = _.throttle(this._cpanel.updateStatsView.bind(this._cpanel), 1000);
 	this._delays = {
 		tick: oOpts.tickDelay,
 		stats: oOpts.statsDelay
@@ -71,6 +71,8 @@ App = function(oOpts){
 
 					_this._stage.toggleInspectionMode(false);
 
+					_this._cpanel.clearStats();
+
 					_this._nextTick();
 
 					break;
@@ -78,7 +80,7 @@ App = function(oOpts){
 				case 'pause':
 					clearTimeout(_this._timers.tick);
 
-					_this._cpanel.clearStats();
+					_this._cpanel.updateStatsView();
 
 					_this._stage.toggleInspectionMode(true);
 
@@ -98,45 +100,18 @@ App = function(oOpts){
 
 	this._stage.signal
 		.on('Actor:Added', function(e, oData){
-			var oActorData = oData.actorData,
-				aStats = [];
-
-			// [TODO] enforce DRY
-			aStats.push({
-				type: 'words',
-				label: oActorData.word
-			});
-
-			_.forEach(oActorData.repo.langs, function(sLang){
-				aStats.push({
-					type: 'langs',
-					label: sLang
-				});
-			});
+			var aStats = _this._cpanel.actorToStats(oData.actorData);
 
 			_this._cpanel.addStats(aStats);
 
-			_this._renderMiniStats();
+			_this.renderMiniStats();
 		}).
 		on('Actor:Freed', function(e, oData){
-			var oActorData = oData.actorData,
-				aStats = [];
-
-			aStats.push({
-				type: 'words',
-				label: oActorData.word
-			});
-
-			_.forEach(oActorData.repo.langs, function(sLang){
-				aStats.push({
-					type: 'langs',
-					label: sLang
-				});
-			});
+			var aStats = _this._cpanel.actorToStats(oData.actorData);
 
 			_this._cpanel.removeStats(aStats);
 
-			_this._renderMiniStats();
+			_this.renderMiniStats();
 		});
 
 	this._socket
@@ -475,7 +450,8 @@ ControlPanel = function(){
 	};
 	this._stats = {
 		langs: [],
-		words: []
+		words: [],
+		repos: []
 	};
 	this._flags = {
 		canAutoDisableLangs: false
@@ -507,19 +483,19 @@ ControlPanel.prototype = {
 	/**
 	 * Converts a string to human-friendly stat label
 	 * 
-	 * @param  string label - Raw string
+	 * @param  string text - Raw string
 	 * @return string
 	 *
 	 * @author Brad Beebe
 	 */
-	_toStatLabel: function(label){
+	_textToStatLabel: function(text){
 		var sLabel;
 
-		if(!_.isString(label)){
+		if(!_.isString(text)){
 			return;
 		}
 
-		sLabel = label
+		sLabel = text
 					.replace(/[^a-z0-9_#'"\+\-\/]/ig, '')
 					.replace(/^'|^"|^/, '')
 					.replace(/'$|"$/, '')
@@ -534,20 +510,16 @@ ControlPanel.prototype = {
 
 
 	/**
-	 * Filters out any empty stats and then sorts them in numerical order
+	 * Sorts stat list in numerical order of their value
 	 * 
 	 * @return void
 	 *
 	 * @author Brad Beebe
 	 */
-	_cleanupStats: function(){
+	_sortStats: function(){
 		var _this = this;
 
 		_.forIn(this._stats, function(aStats, sType){
-			_this._stats[sType] = _.filter(_this._stats[sType], function(oStat){
-				return oStat.value > 0;
-			});
-
 			_this._stats[sType] = _this._stats[sType].sort(function(a, b){
 				if(a.value < b.value){
 					return 1;
@@ -561,6 +533,32 @@ ControlPanel.prototype = {
 			});
 		});
 	},
+
+
+
+	actorToStats: function(oActorData){
+		var aStats = [];
+
+		aStats.push({
+			type: 'words',
+			label: oActorData.word
+		});
+
+		_.forEach(oActorData.repo.langs, function(sLang){
+			aStats.push({
+				type: 'langs',
+				label: sLang
+			});
+		});
+
+		aStats.push({
+			type: 'repos',
+			label: oActorData.repo.name
+		});
+
+		return aStats;
+	},
+
 
 
 	/**
@@ -804,7 +802,7 @@ ControlPanel.prototype = {
 			var sLabel,
 				iIndex;
 
-			sLabel = _this._toStatLabel(oStatI.label);
+			sLabel = _this._textToStatLabel(oStatI.label);
 
 			if(!sLabel.length){
 				return true;
@@ -826,7 +824,7 @@ ControlPanel.prototype = {
 			});
 		});
 
-		this._cleanupStats();
+		this._sortStats();
 	},
 
 
@@ -854,7 +852,7 @@ ControlPanel.prototype = {
 			var sLabel,
 				iIndex;
 
-			sLabel = _this._toStatLabel(oStatI.label);
+			sLabel = _this._textToStatLabel(oStatI.label);
 
 			if(!sLabel.length){
 				return true;
@@ -871,7 +869,7 @@ ControlPanel.prototype = {
 			}
 		});
 
-		this._cleanupStats();
+		this._sortStats();
 	},
 
 
@@ -900,32 +898,63 @@ ControlPanel.prototype = {
 	 */
 	updateStatsView: function(){
 		var _this = this,
-			aAllStats,
 			aStats = [],
+			aLangStats,
 			aWordStats,
+			aRepoStats,
 			iTotalWords;
+
+		aLangStats = _.filter(this._stats.langs, function(oStat){
+			return oStat.value > 0;
+		});
+
+		aWordStats = _.filter(this._stats.words, function(oStat){
+			return oStat.value > 0;
+		}).slice(0, 10);
+
+		aRepoStats = _.filter(this._stats.repos, function(oStat){
+			return oStat.value > 0;
+		});
 
 		aStats.push({
 			type: 'langs',
-			title: 'Top 10 Current Languages',
-			stats: this._stats.langs.slice(0, 10)
+			title: 'Current Languages',
+			stats: aLangStats
 		});
 
 		aStats.push({
 			type: 'words',
 			title: 'Top 10 Current Words',
-			stats: this._stats.words.slice(0, 10)
+			stats: aWordStats
+		});
+
+		aStats.push({
+			type: 'repos',
+			title: 'Current Repos',
+			stats: aRepoStats
 		});
 
 		_.forEach(aStats, function(oStatsInfo){
-			var $stats = _this._$miniStats.find('#top-' + oStatsInfo.type);
+			var $stats = _this._$miniStats.find('#top-' + oStatsInfo.type),
+				aValues = _.pluck(oStatsInfo.stats, 'value'),
+				iTotal;
+
+			iTotal = _.reduce(aValues, function(iSum, iNum){
+				return iSum + iNum;
+			});
 
 			$stats
 				.empty()
 				.append('<li>' + oStatsInfo.title + '</li>');
 
+			if(iTotal === 0){
+				return true;
+			}
+
 			_.forEach(oStatsInfo.stats, function(oStat){
-				$stats.append('<li>' + oStat.label + ': ' + oStat.value + '</li>');
+				var nPct = (oStat.value / iTotal) * 100;
+
+				$stats.append('<li class="stat-item"><div class="stat-label stat-item-child">' + oStat.label + '</div><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div></li>');
 			});
 		});
 	}

@@ -100,12 +100,47 @@
 		}
 
 		.mini-stats-outer{
-			
+			@extend %clearfix;
 		}
 
 		.mini-stats{
 			min-height: 13.75em;
 			margin-bottom: 1.5em;
+		}
+
+		.stat-item{
+			margin-top: 0.25em;
+			padding: 0.15em 0.25em;
+			border: 1px solid #000;
+			position: relative;
+			top: 0;
+			left: 0;
+			z-index: 1;
+		}
+
+		.stat-item:first-child{
+			margin-top: 0;
+		}
+
+		.stat-item-child{
+
+		}
+
+		.stat-label{
+			max-width: 10em;
+			overflow: hidden;
+			line-height: 1;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
+		.stat-bar{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 2;
+			background: rgba(#000, 0.15);
 		}
 	}
 
@@ -189,10 +224,6 @@
 		.filter-col{
 			height: auto;
 			overflow: auto;
-		}
-
-		.mini-stats-outer{
-			display: none;
 		}
 	}
 
