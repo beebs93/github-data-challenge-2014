@@ -30,7 +30,7 @@ Get Started (Local Environment)
 
 - Make a copy of the `oauth.template.json` file and save it as `oauth.json`
 
-- Open the `oauth.json` file then replace `"ENTER_YOUR_CLIENT_ID"` and `"ENTER_YOUR_CLIENT_SECRET"` with the ones from your app
+- Open the `oauth.json` file then replace `"ENTER_YOUR_CLIENT_ID"` and `"ENTER_YOUR_CLIENT_SECRET"` with the ones from your GitHub OAuth application
 
 - Install the `redis-server` NPM module globally
 
