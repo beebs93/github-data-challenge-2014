@@ -24,7 +24,7 @@ Get Started (Local Environment)
 
 - Make a copy of the `oauth.template.json` file and save it as `oauth.json`
 
-- Open the `oauth.json` file then replace the default client ID and secret with the ones from your app
+- Open the `oauth.json` file then replace the default `"clientId"` and `"clientSecret"` with the ones from your app
 
 - Install the Redis Server module (if not already done so)
 
