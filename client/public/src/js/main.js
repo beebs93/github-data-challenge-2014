@@ -173,7 +173,7 @@ App.prototype = {
 			return;
 		}
 
-		// Determine if we need to add any new language button filters
+		// Determine if we need to add any new language filter buttons
 		aRepoLangs = _.map(oActorData.repo.langs, function(sLang){
 			return sLang.toLowerCase();
 		});
