@@ -959,16 +959,30 @@ ControlPanel.prototype = {
 			_.forEach(oStatsInfo.stats, function(oStat){
 				var nPct = (oStat.value / iTotal) * 100,
 					sLabel = oStat.label,
-					$statItem = $statsList.filter('[data-stat-type="' + sType + '"][data-stat-label="' + sLabel + '"]'),
+					$statItems = $statsList.find('li.stat-item[data-stat-type="' + sType + '"]'),
+					$statItem,
 					sStatContent;
 
-				if($statItem.length){
+				$statItems.each(function(i, el){
+					var $el = $(el),
+						oData = $el.data();
+
+					if(oData.statLabel !== sLabel){
+						return true;
+					}
+
+					$statItem = $el;
+
+					return false;
+				});
+
+				if($statItem && $statItem.length){
 					$statItem
 						.removeClass('out-of-range')
 						.find('.stat-bar')
 						.css({
 							width: nPct + '%'
-						})
+						});
 
 					return true;
 				}
@@ -979,7 +993,13 @@ ControlPanel.prototype = {
 					sStatContent = '<a class="stat-link stat-item-child" href="' + oStat.url + '" target="_blank"><div class="stat-label">' + sLabel + '</div></a>';
 				}
 
-				$statsList.append('<li class="stat-item" data-stat-type="' + oStatsInfo.type + '" data-stat-label="' + sLabel + '"><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div>' + sStatContent + '</li>');
+				$statItem = $('<li class="stat-item" data-stat-type="' + oStatsInfo.type + '" data-stat-label="' + sLabel + '"><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div>' + sStatContent + '</li>');
+				
+				$statsList.append($statItem);
+
+				$statItem.data({
+					statLabel: sLabel
+				});
 			});
 		});
 	}
