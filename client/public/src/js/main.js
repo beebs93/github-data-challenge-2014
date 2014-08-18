@@ -1015,6 +1015,13 @@ Stage = function(){
 };
 
 Stage.prototype = {
+	/**
+	 * Caclulates and records any DOM element dimensions
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
 	_calcDimensions: function(){
 		_.merge(this._dimensions, {
 			stage: {
