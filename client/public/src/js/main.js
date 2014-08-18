@@ -1099,7 +1099,6 @@ Stage.prototype = {
 	 */
 	_positionActor: function($actor){
 		var iWidth,
-			iHeight,
 			zIndex = _.random(1, 10),
 			sLayerType = 'layer-';
 
@@ -1116,14 +1115,8 @@ Stage.prototype = {
 			.addClass(sLayerType);
 
 		iWidth = $actor.outerWidth();
-		iHeight = $actor.outerHeight();
 
 		$actor
-			.velocity({
-				translateY: -iHeight
-			}, {
-				duration: 0
-			})
 			.css({
 				left: _.random(0, (this._dimensions.stage.width - iWidth)),
 				zIndex: zIndex,
@@ -1149,6 +1142,7 @@ Stage.prototype = {
 			oFilters = oOpts.filters || {},
 			aLangFilters = oFilters.langs || [],
 			aWordFilters = oFilters.words || [],
+			iHeight,
 			iLayerIndex,
 			iDuration,
 			aLangMatchList,
@@ -1218,10 +1212,12 @@ Stage.prototype = {
 			iDuration = _.random(10000, 11000);
 		}
 
+		iHeight = $actor.outerHeight();
+
 		$actor
 			.addClass('actor-positioned')
 			.velocity({
-				translateY: (this._dimensions.stage.height + ($actor.outerHeight() * 2))
+				translateY: [(this._dimensions.stage.height + (iHeight * 2)), -iHeight]
 			},{
 				complete: function(){
 					$actor._isFree = true;
