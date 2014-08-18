@@ -11,10 +11,20 @@ Requirements
 Installation
 --------------
 
+- [Download and install node.js](http://nodejs.org/download/)
+
+- Clone this repository and install any dependencies
+
 ```sh
 git clone git@github.com:beebs93/github-data-challenge-2014.git github-data-challenge-2014-brad-beebe
 cd github-data-challenge-2014-brad-beebe
 npm install
+```
+
+- Install the `redis-server` NPM module
+
+```sh
+npm install -g redis-server
 ```
 
 Get Started (Local Environment)
@@ -25,12 +35,6 @@ Get Started (Local Environment)
 - Make a copy of the `oauth.template.json` file and save it as `oauth.json`
 
 - Open the `oauth.json` file then replace the default `"clientId"` and `"clientSecret"` with the ones from your app
-
-- Install the `redis-server` NPM module
-
-```sh
-npm install -g redis-server
-```
 
 - Open a new Terminal window and start the Redis server
 
