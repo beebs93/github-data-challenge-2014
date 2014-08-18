@@ -202,6 +202,9 @@ GithubEventHarvester.prototype = {
 			}
 
 			// Determine the delay for the next iteration
+			// Since each event could potentially by another API request to a
+			// repo's /languages endpoint we have to factor that in when
+			// calculating the iteration interval
 			iMaxReqsPerHour = parseInt(res.headers['x-ratelimit-limit'], 10);
 			iMaxReqsPerHour = iMaxReqsPerHour > 0 ? iMaxReqsPerHour : _this.settings.defaults.maxReqsPerHour;
 			iIterationInterval = Math.ceil(3600 / (iMaxReqsPerHour / (1 + iNumEvents)) * 1000);
