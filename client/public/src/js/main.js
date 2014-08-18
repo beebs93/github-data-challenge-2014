@@ -49,7 +49,6 @@ App = function(oOpts){
 	this._hopper = new Hopper();
 	this._cpanel = new ControlPanel();
 	this._stage = new Stage();
-	this.renderMiniStats = _.throttle(this._cpanel.updateStatsView.bind(this._cpanel), 1000);
 	this._delays = {
 		tick: oOpts.tickDelay,
 		stats: oOpts.statsDelay
@@ -58,6 +57,8 @@ App = function(oOpts){
 		tick: null,
 		stats: null
 	};
+
+	this.renderMiniStats = _.throttle(this._cpanel.updateStatsView.bind(this._cpanel), this._delays.stats);
 
 	this._cpanel.signal
 		.on('RemoteControl:Click', function(e, oData){
