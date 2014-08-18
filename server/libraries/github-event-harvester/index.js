@@ -58,7 +58,8 @@ function GithubEventHarvester(){
 	};
 
 	this.flags = {
-		isGettingEvents: false
+		isGettingEvents: false,
+		isStopped: true
 	};
 };
 
@@ -71,13 +72,22 @@ GithubEventHarvester.prototype = {
 	 * @author Brad Beebe
 	 */
 	start: function(){
-		if(this.flags.isGettingEvents === true){
-			debug.warn('Cannot start: Still getting global events');
+		try{
+			if(this.flags.isGettingEvents === true){
+				throw 'Still getting global events';
+			}
+
+			if(this.flags.isStopped !== true){
+				throw 'Already started';
+			}
+		}
+		catch(err){
+			debug.warn('Cannot start: ' + err);
 
 			return;
 		}
 
-		this.stop();
+		this.flags.isStopped = false;
 
 		this._getLatestGlobalEvents();
 	},
@@ -91,6 +101,19 @@ GithubEventHarvester.prototype = {
 	 * @author Brad Beebe
 	 */
 	stop: function(){
+		try{
+			if(this.flags.isStopped === true){
+				throw 'Already stopped';
+			}
+		}
+		catch(err){
+			debug.warn('Cannot stop: ' + err);
+
+			return;
+		}
+
+		this.flags.isStopped = true;
+
 		clearTimeout(this.timers.getEvents);
 	},
 
@@ -106,9 +129,7 @@ GithubEventHarvester.prototype = {
 		var _this = this,
 			oOpts;
 
-		if(this.flags.isGettingEvents === true){
-			debug.warn('Still getting global events');
-
+		if(this.flags.isGettingEvents === true || this.flags.isStopped === true){
 			return;
 		}
 
