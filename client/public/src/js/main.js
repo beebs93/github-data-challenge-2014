@@ -554,7 +554,8 @@ ControlPanel.prototype = {
 
 		aStats.push({
 			type: 'repos',
-			label: oActorData.repo.name
+			label: oActorData.repo.name,
+			url: oActorData.repo.url
 		});
 
 		return aStats;
@@ -821,7 +822,8 @@ ControlPanel.prototype = {
 
 			_this._stats[oStatI.type].push({
 				label: sLabel,
-				value: 1
+				value: 1,
+				url: _.isUndefined(oStatI.url) ? '' : oStatI.url
 			});
 		});
 
@@ -863,11 +865,11 @@ ControlPanel.prototype = {
 				return oStatJ.label === sLabel;
 			});
 
-			if(iIndex !== -1){
-				_this._stats[oStatI.type][iIndex].value--;
-
+			if(iIndex === -1){
 				return true;
 			}
+
+			_this._stats[oStatI.type][iIndex].value = Math.max(0, _this._stats[oStatI.type][iIndex].value - 1);
 		});
 
 		this._sortStats();
@@ -953,9 +955,16 @@ ControlPanel.prototype = {
 			}
 
 			_.forEach(oStatsInfo.stats, function(oStat){
-				var nPct = (oStat.value / iTotal) * 100;
+				var nPct = (oStat.value / iTotal) * 100,
+					sLabel;
 
-				$stats.append('<li class="stat-item"><div class="stat-label stat-item-child">' + oStat.label + '</div><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div></li>');
+				if(!oStat.url.length){
+					sLabel = '<div class="stat-label stat-item-child">' + oStat.label + '</div>';
+				}else{
+					sLabel = '<a class="stat-link stat-item-child" href="' + oStat.url + '" target="_blank"><div class="stat-label">' + oStat.label + '</div></a>';
+				}
+
+				$stats.append('<li class="stat-item"><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div>' + sLabel + '</li>');
 			});
 		});
 	}
