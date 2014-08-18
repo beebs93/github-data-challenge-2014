@@ -28,7 +28,8 @@ var App;
 
 (function($){
 
-var Hopper,
+var $window = $(window),
+	Hopper,
 	ControlPanel,
 	Stage;
 
@@ -967,7 +968,8 @@ ControlPanel.prototype = {
  * @author Brad Beebe
  */
 Stage = function(){
-	var $stage = $('#stage'),
+	var _this = this,
+		$stage = $('#stage'),
 		$actorTpl;
 
 	if(!$stage || $stage.length !== 1){
@@ -986,20 +988,43 @@ Stage = function(){
 
 	this.signal = $({});
 	this._$stage = $stage;
-	this._stageWidth = this._$stage.outerWidth();
-	this._stageHeight = this._$stage.outerHeight();
 	this._actors = [];
 	this._$actorTpl = $actorTpl.removeAttr('id').clone(false);
+	this._dimensions = {
+		stage: {
+			width: null,
+			height: null
+		}
+	};
 	this._flags = {
 		isInspectionMode: false
 	};
+	this._timers = {
+		windowResize: null
+	};
+
+	$window.on('resize', function(e){
+		clearTimeout(_this._timers.windowResize);
+
+		_this._timers.windowResize = setTimeout(_this._calcDimensions.bind(_this), 500);
+	});
+
+	this._calcDimensions();
 
 	$actorTpl.remove();
-
-	// [TODO] reset dimensions on window resize
 };
 
 Stage.prototype = {
+	_calcDimensions: function(){
+		_.merge(this._dimensions, {
+			stage: {
+				width: this._$stage.outerWidth(),
+				height: this._$stage.outerHeight()
+			}
+		});
+	},
+
+
 	/**
 	 * Finds (or creates) a free actor element
 	 *
@@ -1093,7 +1118,7 @@ Stage.prototype = {
 				duration: 0
 			})
 			.css({
-				left: _.random(0, (this._stageWidth - iWidth)),
+				left: _.random(0, (this._dimensions.stage.width - iWidth)),
 				zIndex: zIndex,
 				transform: ''
 			});
@@ -1189,7 +1214,7 @@ Stage.prototype = {
 		$actor
 			.addClass('actor-positioned')
 			.velocity({
-				translateY: (this._stageHeight + ($actor.outerHeight() * 2))
+				translateY: (this._dimensions.stage.height + ($actor.outerHeight() * 2))
 			},{
 				complete: function(){
 					$actor._isFree = true;
