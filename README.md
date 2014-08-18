@@ -24,15 +24,15 @@ Get Started (Local Environment)
 
 - Make a copy of the `oauth.template.json` file and save it as `oauth.json`
 
-- Edit the `oauth.json` file then add your new app's client ID and secret as indicated
+- Open the `oauth.json` file then replace the default client ID and secret with the ones from your app
 
-- Install any dependent global module(s)
+- Install the Redis Server module (if not already done so)
 
 ```sh
 npm install -g redis-server
 ```
 
-- Open a new Terminal window and start up the Redis server
+- Open a new Terminal window and start the Redis server
 
 ```sh
 redis-server
