@@ -50,4 +50,4 @@ redis-server
 node index.js
 ```
 
-- Load [http://127.0.0.1:3000](http://127.0.0.1:3000) in any browser
+- Load [http://127.0.0.1:3000](http://127.0.0.1:3000) in the latest version of any browser
