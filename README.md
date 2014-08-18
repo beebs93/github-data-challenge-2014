@@ -51,3 +51,9 @@ node index.js
 ```
 
 - Load [http://127.0.0.1:3000](http://127.0.0.1:3000) in the latest version of any browser
+
+License
+--------------
+Copyright (c) 2014 Brad Beebe
+
+Dual-licensed under MIT and GPL licenses.
