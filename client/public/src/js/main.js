@@ -921,24 +921,22 @@ ControlPanel.prototype = {
 
 		aStats.push({
 			type: 'langs',
-			title: 'Current Languages',
 			stats: aLangStats
 		});
 
 		aStats.push({
 			type: 'words',
-			title: 'Top 10 Current Words',
 			stats: aWordStats
 		});
 
 		aStats.push({
 			type: 'repos',
-			title: 'Current Repos',
 			stats: aRepoStats
 		});
 
 		_.forEach(aStats, function(oStatsInfo){
-			var $stats = _this._$miniStats.find('#top-' + oStatsInfo.type),
+			var sType = oStatsInfo.type,
+				$statsList = _this._$miniStats.find('#top-' + sType),
 				aValues = _.pluck(oStatsInfo.stats, 'value'),
 				iTotal;
 
@@ -946,9 +944,9 @@ ControlPanel.prototype = {
 				return iSum + iNum;
 			});
 
-			$stats
-				.empty()
-				.append('<li>' + oStatsInfo.title + '</li>');
+			$statsList
+				.find('.stat-item')
+				.addClass('out-of-range');
 
 			if(iTotal === 0){
 				return true;
@@ -956,15 +954,28 @@ ControlPanel.prototype = {
 
 			_.forEach(oStatsInfo.stats, function(oStat){
 				var nPct = (oStat.value / iTotal) * 100,
-					sLabel;
+					sLabel = oStat.label,
+					$statItem = $statsList.filter('[data-stat-type="' + sType + '"][data-stat-label="' + sLabel + '"]'),
+					sStatContent;
 
-				if(!oStat.url.length){
-					sLabel = '<div class="stat-label stat-item-child">' + oStat.label + '</div>';
-				}else{
-					sLabel = '<a class="stat-link stat-item-child" href="' + oStat.url + '" target="_blank"><div class="stat-label">' + oStat.label + '</div></a>';
+				if($statItem.length){
+					$statItem
+						.removeClass('out-of-range')
+						.find('.stat-bar')
+						.css({
+							width: nPct + '%'
+						})
+
+					return true;
 				}
 
-				$stats.append('<li class="stat-item"><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div>' + sLabel + '</li>');
+				if(!oStat.url.length){
+					sStatContent = '<div class="stat-label stat-item-child">' + sLabel + '</div>';
+				}else{
+					sStatContent = '<a class="stat-link stat-item-child" href="' + oStat.url + '" target="_blank"><div class="stat-label">' + sLabel + '</div></a>';
+				}
+
+				$statsList.append('<li class="stat-item" data-stat-type="' + oStatsInfo.type + '" data-stat-label="' + sLabel + '"><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div>' + sStatContent + '</li>');
 			});
 		});
 	}

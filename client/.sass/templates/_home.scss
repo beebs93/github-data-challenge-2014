@@ -118,6 +118,10 @@
 			z-index: 1;
 		}
 
+		.stat-item.out-of-range{
+			display: none;
+		}
+
 		.stat-item:first-child{
 			margin-top: 0;
 		}
