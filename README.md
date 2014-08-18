@@ -26,7 +26,7 @@ Get Started (Local Environment)
 
 - Open the `oauth.json` file then replace the default `"clientId"` and `"clientSecret"` with the ones from your app
 
-- Install the Redis Server module (if not already done so)
+- Install the `redis-server` NPM module
 
 ```sh
 npm install -g redis-server
