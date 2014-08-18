@@ -100,10 +100,11 @@
 		}
 
 		.mini-stats-outer{
-
+			
 		}
 
 		.mini-stats{
+			min-height: 13.75em;
 			margin-bottom: 1.5em;
 		}
 	}
@@ -188,6 +189,10 @@
 		.filter-col{
 			height: auto;
 			overflow: auto;
+		}
+
+		.mini-stats-outer{
+			display: none;
 		}
 	}
 

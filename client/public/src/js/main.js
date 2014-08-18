@@ -48,7 +48,7 @@ App = function(oOpts){
 	this._hopper = new Hopper();
 	this._cpanel = new ControlPanel();
 	this._stage = new Stage();
-	this._renderMiniStats = _.throttle(this._cpanel.updateStatsDisplay.bind(this._cpanel), 2500);
+	this._renderMiniStats = _.throttle(this._cpanel.updateStatsView.bind(this._cpanel), 1000);
 	this._delays = {
 		tick: oOpts.tickDelay,
 		stats: oOpts.statsDelay
@@ -69,8 +69,6 @@ App = function(oOpts){
 				case 'play':
 					_this._hopper.keepLast(200);
 
-					_this._cpanel.clearStats();
-
 					_this._stage.toggleInspectionMode(false);
 
 					_this._nextTick();
@@ -79,6 +77,8 @@ App = function(oOpts){
 
 				case 'pause':
 					clearTimeout(_this._timers.tick);
+
+					_this._cpanel.clearStats();
 
 					_this._stage.toggleInspectionMode(true);
 
@@ -101,7 +101,7 @@ App = function(oOpts){
 			var oActorData = oData.actorData,
 				aStats = [];
 
-			// [TODO reduce DRY]
+			// [TODO] enforce DRY
 			aStats.push({
 				type: 'words',
 				label: oActorData.word
@@ -504,21 +504,28 @@ ControlPanel.prototype = {
 	},
 
 
-
-	_toStatLabel: function(string){
+	/**
+	 * Converts a string to human-friendly stat label
+	 * 
+	 * @param  string label - Raw string
+	 * @return string
+	 *
+	 * @author Brad Beebe
+	 */
+	_toStatLabel: function(label){
 		var sLabel;
 
-		if(!_.isString(string)){
+		if(!_.isString(label)){
 			return;
 		}
 
-		sLabel = string
+		sLabel = label
 					.replace(/[^a-z0-9_#'"\+\-\/]/ig, '')
 					.replace(/^'|^"|^/, '')
 					.replace(/'$|"$/, '')
 					.trim();
 
-		if(sLabel.length < 3 || !sLabel.replace(/\d+/g, '').length){
+		if(!sLabel.length || !sLabel.replace(/\d+/g, '').length){
 			return '';
 		}
 
@@ -526,8 +533,14 @@ ControlPanel.prototype = {
 	},
 
 
-
-	_sortStats: function(){
+	/**
+	 * Filters out any empty stats and then sorts them in numerical order
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	_cleanupStats: function(){
 		var _this = this;
 
 		_.forIn(this._stats, function(aStats, sType){
@@ -767,7 +780,14 @@ ControlPanel.prototype = {
 	},
 
 
-
+	/**
+	 * Adds stats to the main list
+	 * 
+	 * @param  mixed stats - Single (or array of) stat object
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
 	addStats: function(stats){
 		var _this = this,
 			aStats2Add;
@@ -806,11 +826,18 @@ ControlPanel.prototype = {
 			});
 		});
 
-		this._sortStats();
+		this._cleanupStats();
 	},
 
 
-
+	/**
+	 * Removes stats to the main list
+	 * 
+	 * @param  mixed stats - Single (or array of) stat object
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
 	removeStats: function(stats){
 		var _this = this,
 			aStats2Remove;
@@ -844,11 +871,17 @@ ControlPanel.prototype = {
 			}
 		});
 
-		this._sortStats();
+		this._cleanupStats();
 	},
 
 
-
+	/**
+	 * Clears the list of stats
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
 	clearStats: function(){
 		var _this = this;
 
@@ -858,8 +891,14 @@ ControlPanel.prototype = {
 	},
 
 
-
-	updateStatsDisplay: function(){
+	/**
+	 * Updates the mini stats view
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	updateStatsView: function(){
 		var _this = this,
 			aAllStats,
 			aStats = [],
