@@ -157,8 +157,8 @@ App.prototype = {
 	 * @author Brad Beebe
 	 */
 	_nextTick: function(){
-		var oActorData = this._hopper.getOne(),
-			oFilters = this._cpanel.getFilters(),
+		var oActorData,
+			oFilters,
 			aRepoLangs,
 			aValidLangs,
 			aLangButtons = [];
@@ -166,6 +166,9 @@ App.prototype = {
 		if(this._stage.isInspectionMode()){
 			return;
 		}
+
+		oActorData = this._hopper.getOne();
+		oFilters = this._cpanel.getFilters();
 
 		if(!oActorData || !oActorData.word){
 			this._timers.tick = setTimeout(this._nextTick.bind(this), this._delays.tick);
