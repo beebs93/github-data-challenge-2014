@@ -120,14 +120,26 @@ App = function(oOpts){
 
 		stage.signal
 			.on('Actor:Added', function(e, oData){
-				var aStats = cpanel.actorToStats(oData.actorData);
+				var aStats;
+
+				if(oData.isFilterMatch === true){
+					return;
+				}
+
+				aStats = cpanel.actorToStats(oData.actorData);
 
 				cpanel.addStats(aStats);
 
 				_this.renderMiniStats();
 			}).
 			on('Actor:Freed', function(e, oData){
-				var aStats = cpanel.actorToStats(oData.actorData);
+				var aStats;
+
+				if(oData.isFilterMatch === true){
+					return;
+				}
+
+				aStats = cpanel.actorToStats(oData.actorData);
 
 				cpanel.removeStats(aStats);
 
@@ -1262,12 +1274,14 @@ Stage = function(){
 			aLangMatchList,
 			aRepoLangs,
 			aLangDiff,
+			bAnyFilterMatch = false,
 			$actor;
 
 		if(!oData || !_.isPlainObject(oData) || oFlags.isInspectionMode === true){
 			return;
 		}
 
+		// Check for language matches
 		if(aLangFilters.length > 0){
 			aRepoLangs = _.map(oData.repo.langs, function(sLang){
 				return sLang.toLowerCase();
@@ -1275,17 +1289,12 @@ Stage = function(){
 
 			aLangDiff = _.difference(aRepoLangs, aLangFilters);
 
-			if(aLangDiff.length !== aRepoLangs.length){
-				//console.info('Filtered out "' + oData.word + '": Language filter match');
-
-				return;
-			}
+			bAnyFilterMatch = aLangDiff.length !== aRepoLangs.length;
 		}
 
-		if(_.indexOf(aWordFilters, oData.word.toLowerCase()) !== -1){
-			//console.info('Filtered out "' + oData.word + '": Word filter match');
-
-			return;
+		// Check for word matches (if not already matched a language)
+		if(aWordFilters.length > 0 && bAnyFilterMatch === false){
+			bAnyFilterMatch = _.indexOf(aWordFilters, oData.word.toLowerCase()) !== -1;
 		}
 
 		$actor = getFreeActor();
@@ -1315,6 +1324,10 @@ Stage = function(){
 			})
 			.html(oData.repo.name + ' <i class="fa fa-external-link"></i>');
 
+		if(bAnyFilterMatch){
+			$actor.addClass('filter-match');
+		}
+
 		prepareActor($actor);
 
 		iLayerIndex = parseInt($actor.css('zIndex'), 10);
@@ -1338,7 +1351,8 @@ Stage = function(){
 					$actor._isFree = true;
 
 					_this.signal.trigger('Actor:Freed', {
-						actorData: oData
+						actorData: oData,
+						isFilterMatch: $actor.hasClass('filter-match')
 					});
 				},
 				duration: iDuration,
@@ -1346,7 +1360,8 @@ Stage = function(){
 			});
 
 		this.signal.trigger('Actor:Added', {
-			actorData: oData
+			actorData: oData,
+			isFilterMatch: $actor.hasClass('filter-match')
 		});
 	};
 
