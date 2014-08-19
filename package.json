@@ -1,7 +1,7 @@
 {
-  "name": "github-2014-data-challenge",
+  "name": "brad-beebe-github-2014-data-challenge",
   "version": "0.0.1",
-  "description": "GitHub 2014 Data Challenge submission",
+  "description": "Brad Beebe’s GitHub 2014 Data Challenge submission",
   "main": "index.js",
   "author": "Brad Beebe",
   "license": "GPL/MIT",

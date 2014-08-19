@@ -3,7 +3,6 @@ npm-debug.log
 dump.rdb
 oauth.json
 client/public/generated
-client/public/dist/css/*.css
-client/public/dist/js/*.js
+client/public/dist
 node_modules/
 .sass-cache/
