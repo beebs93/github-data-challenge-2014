@@ -16,7 +16,7 @@ Installation
 
 - [Download and install node.js](http://nodejs.org/download/)
 
-- Install the `grunt-cli' npm module globally
+- Install the `grunt-cli` npm module globally
 
 ```sh
 npm install -g grunt-cli
