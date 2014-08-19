@@ -5,9 +5,10 @@ Entry for the [Third Annual GitHub Data Challenge](https://github.com/blog/1864-
 
 Requirements
 --------------
-- `git v.1.8.5.2+`
-- `node.js v.0.10.28+`
-- `Redis Server v.2.6.14+`
+- `git v1.8.5.2+`
+- `node.js v0.10.28+`
+- `Redis Server v2.6.14+`
+- `Grunt CLI v0.1.13+`
 
 Installation
 --------------
@@ -15,12 +16,19 @@ Installation
 
 - [Download and install node.js](http://nodejs.org/download/)
 
-- Clone this repository and install any dependencies
+- Install the `grunt-cli' npm module globally
+
+```sh
+npm install -g grunt-cli
+```
+
+- Clone this repository, install any of its dependencies and run the default `grunt` task
 
 ```sh
 git clone git@github.com:beebs93/github-data-challenge-2014.git github-data-challenge-2014-brad-beebe
 cd github-data-challenge-2014-brad-beebe
 npm install
+grunt
 ```
 
 Get Started (Local Environment)
@@ -32,7 +40,7 @@ Get Started (Local Environment)
 
 - Open the `oauth.json` file then replace `"ENTER_YOUR_CLIENT_ID"` and `"ENTER_YOUR_CLIENT_SECRET"` with the ones from your GitHub OAuth application
 
-- Install the `redis-server` NPM module globally
+- Install the `redis-server` npm module globally
 
 ```sh
 npm install -g redis-server
