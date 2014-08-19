@@ -3,6 +3,10 @@ GitHub 2014 Data Challenge
 
 Entry for the [Third Annual GitHub Data Challenge](https://github.com/blog/1864-third-annual-github-data-challenge)
 
+Description
+--------------
+An application that represents specific user-generated messages retrieved from the public [GitHub Events API](https://developer.github.com/v3/activity/events/) broken down by word and the programming language(s) of the originating GitHub repository.
+
 Requirements
 --------------
 - `git v1.8.5.2+`
