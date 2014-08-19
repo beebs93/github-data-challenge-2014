@@ -6,50 +6,50 @@ var path = require('path'),
 
 
 // Base config class
-function Config(){};
-
-Config.prototype = {
-	api: {
-		limits: {
-			minWordLength: 3,
-			maxWordLength: 20
-		}
-	},
-	db: {
-		redis: {
-			dbIndex: null
-		}
-	},
-	general: {
-		defaults: {
-			iterationIntervalMS: 30000
-		}
-	},
-	github: {
-		defaults: {
-			maxReqsPerHour: 5000,
-			reqTimeoutMS: 10000
+function Config(){
+	_.merge(this, {
+		api: {
+			limits: {
+				minWordLength: 3,
+				maxWordLength: 20
+			}
 		},
-		ttl: {
-			repoSEC: null,
-			wordSEC: null
+		db: {
+			redis: {
+				dbIndex: null
+			}
 		},
-		uris: {
-			api: {
-				base: 'https://api.github.com',
-				events: '/events',
-				languages: '/languages'
+		general: {
+			defaults: {
+				iterationIntervalMS: 30000
+			}
+		},
+		github: {
+			defaults: {
+				maxReqsPerHour: 5000,
+				reqTimeoutMS: 10000
+			},
+			ttl: {
+				repoSEC: null,
+				wordSEC: null
+			},
+			uris: {
+				api: {
+					base: 'https://api.github.com',
+					events: '/events',
+					languages: '/languages'
+				}
+			}
+		},
+		servers: {
+			http: {
+				port: null
+			},
+			socketio: {
+				port: null
 			}
 		}
-	},
-	servers: {
-		http: {
-			port: null
-		},
-		socketio: {
-			port: null
-		}
-	}
+	});
 };
 
 

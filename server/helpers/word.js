@@ -10,7 +10,7 @@ module.exports = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_sanitize: function(sWord){
+	sanitize: function(sWord){
 		if(!_.isString(sWord)){
 			return '';
 		}
@@ -41,7 +41,7 @@ module.exports = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_hasOnlyNumbers: function(sWord){
+	hasOnlyNumbers: function(sWord){
 		if(_.isNumber(sWord)){
 			sWord = sWord.toString();
 		}
@@ -74,7 +74,7 @@ module.exports = {
 		aWords = [];
 
 		_.forEach(aRawWords, function(sWord){
-			sWord = _this._sanitize(sWord).toLowerCase();
+			sWord = _this.sanitize(sWord).toLowerCase();
 
 			if(!sWord.length){
 				return true;
@@ -84,7 +84,7 @@ module.exports = {
 		});
 
 		aWords = _.filter(aWords, function(sWord){
-			return sWord.length > 0 && !_this._hasOnlyNumbers(sWord);
+			return sWord.length > 0 && !_this.hasOnlyNumbers(sWord);
 		});
 
 		return aWords;

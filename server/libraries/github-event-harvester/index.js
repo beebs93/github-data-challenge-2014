@@ -20,50 +20,64 @@ var path = require('path'),
  * @author Brad Beebe
  */
 function GithubEventHarvester(){
-	this.settings = {
-		api: {
-			baseUrl: config.github.uris.api.base,
-			baseReqOpts: {
-				headers: {
-					'User-Agent': 'GitHub 2014 Data Challenge'
-				},
-				method: 'GET',
-				qs: {
-					client_id: config.github.oauth.clientId,
-					client_secret: config.github.oauth.clientSecret
-				},
-				timeout: config.github.defaults.reqTimeoutMS
+	var _this,
+		oSettings,
+		oTimers,
+		oFlags;
+
+
+	/**
+	 * Constructor init callback
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	function init(){
+		oSettings = {
+			api: {
+				baseUrl: config.github.uris.api.base,
+				baseReqOpts: {
+					headers: {
+						'User-Agent': 'GitHub 2014 Data Challenge'
+					},
+					method: 'GET',
+					qs: {
+						client_id: config.github.oauth.clientId,
+						client_secret: config.github.oauth.clientSecret
+					},
+					timeout: config.github.defaults.reqTimeoutMS
+				}
+			},
+			defaults: {
+				iterationInterval: config.general.defaults.iterationIntervalMS,
+				maxReqsPerHour: config.github.defaults.maxReqsPerHour
+			},
+			ttl: {
+				repo: config.github.ttl.repoSEC,
+				word: config.github.ttl.wordSEC
+			},
+			uris: {
+				events: config.github.uris.api.events,
+				languages: config.github.uris.api.languages
+			},
+			wordLimits: {
+				min: config.api.limits.minWordLength, 
+				max: config.api.limits.maxWordLength
 			}
-		},
-		defaults: {
-			iterationInterval: config.general.defaults.iterationIntervalMS,
-			maxReqsPerHour: config.github.defaults.maxReqsPerHour
-		},
-		ttl: {
-			repo: config.github.ttl.repoSEC,
-			word: config.github.ttl.wordSEC
-		},
-		uris: {
-			events: config.github.uris.api.events,
-			languages: config.github.uris.api.languages
-		},
-		wordLimits: {
-			min: config.api.limits.minWordLength, 
-			max: config.api.limits.maxWordLength
-		}
+		};
+
+		oTimers = {
+			getEvents: null
+		};
+
+		oFlags = {
+			isGettingEvents: false,
+			isStopped: true
+		};
 	};
 
-	this.timers = {
-		getEvents: null
-	};
 
-	this.flags = {
-		isGettingEvents: false,
-		isStopped: true
-	};
-};
-
-GithubEventHarvester.prototype = {
 	/**
 	 * Starts the harvesting process
 	 * 
@@ -71,13 +85,13 @@ GithubEventHarvester.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	start: function(){
+	this.start = function(){
 		try{
-			if(this.flags.isGettingEvents === true){
+			if(oFlags.isGettingEvents === true){
 				throw 'Still getting global events';
 			}
 
-			if(this.flags.isStopped !== true){
+			if(oFlags.isStopped !== true){
 				throw 'Already started';
 			}
 		}
@@ -87,10 +101,10 @@ GithubEventHarvester.prototype = {
 			return;
 		}
 
-		this.flags.isStopped = false;
+		oFlags.isStopped = false;
 
-		this._getLatestGlobalEvents();
-	},
+		getLatestGlobalEvents();
+	};
 
 
 	/**
@@ -100,9 +114,9 @@ GithubEventHarvester.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	stop: function(){
+	this.stop = function(){
 		try{
-			if(this.flags.isStopped === true){
+			if(oFlags.isStopped === true){
 				throw 'Already stopped';
 			}
 		}
@@ -112,10 +126,10 @@ GithubEventHarvester.prototype = {
 			return;
 		}
 
-		this.flags.isStopped = true;
+		oFlags.isStopped = true;
 
-		clearTimeout(this.timers.getEvents);
-	},
+		clearTimeout(oTimers.getEvents);
+	};
 
 
 	/**
@@ -125,21 +139,20 @@ GithubEventHarvester.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_getLatestGlobalEvents: function(){
-		var _this = this,
-			oOpts;
+	function getLatestGlobalEvents(){
+		var oOpts;
 
-		if(this.flags.isGettingEvents === true || this.flags.isStopped === true){
+		if(oFlags.isGettingEvents === true || oFlags.isStopped === true){
 			return;
 		}
 
-		this.flags.isGettingEvents = true;
+		oFlags.isGettingEvents = true;
 
-		oOpts = _.clone(this.settings.api.baseReqOpts);
+		oOpts = _.clone(oSettings.api.baseReqOpts);
 
 		_.merge(oOpts, {
 			method: 'GET',
-			url: this.settings.api.baseUrl + this.settings.uris.events
+			url: oSettings.api.baseUrl + oSettings.uris.events
 		});
 
 		request(oOpts, function(err, res, body){
@@ -148,15 +161,15 @@ GithubEventHarvester.prototype = {
 				aRawEvents,
 				iNumEvents;
 
-			_this.flags.isGettingEvents = false;
+			oFlags.isGettingEvents = false;
 
-			iIterationInterval = _this.settings.defaults.iterationInterval;
+			iIterationInterval = oSettings.defaults.iterationInterval;
 
 			// Check for errors
 			if(err){
 				debug.error(oOpts.url + ' API error ' + err + ' | ' + body);
 
-				_this.timers.getEvents = setTimeout(_this._getLatestGlobalEvents.bind(_this), iIterationInterval);
+				oTimers.getEvents = setTimeout(getLatestGlobalEvents.bind(_this), iIterationInterval);
 
 				return;
 			}
@@ -196,7 +209,7 @@ GithubEventHarvester.prototype = {
 			if(iNumEvents === 0){
 				debug.info('No important events');
 
-				_this.timers.getEvents = setTimeout(_this._getLatestGlobalEvents.bind(_this), iIterationInterval);
+				oTimers.getEvents = setTimeout(getLatestGlobalEvents.bind(_this), iIterationInterval);
 
 				return;
 			}
@@ -206,7 +219,7 @@ GithubEventHarvester.prototype = {
 			// repo's /languages endpoint we have to factor that in when
 			// calculating the iteration interval
 			iMaxReqsPerHour = parseInt(res.headers['x-ratelimit-limit'], 10);
-			iMaxReqsPerHour = iMaxReqsPerHour > 0 ? iMaxReqsPerHour : _this.settings.defaults.maxReqsPerHour;
+			iMaxReqsPerHour = iMaxReqsPerHour > 0 ? iMaxReqsPerHour : oSettings.defaults.maxReqsPerHour;
 			iIterationInterval = Math.ceil(3600 / (iMaxReqsPerHour / (1 + iNumEvents)) * 1000);
 
 			//debug.info('Current rate of seconds/iteration: ' + (iIterationInterval / 1000));
@@ -214,7 +227,7 @@ GithubEventHarvester.prototype = {
 			if(res.statusCode === 304){
 				debug.info('No new events returned');
 
-				_this.timers.getEvents = setTimeout(_this._getLatestGlobalEvents.bind(_this), iIterationInterval);
+				oTimers.getEvents = setTimeout(getLatestGlobalEvents.bind(_this), iIterationInterval);
 
 				return;
 			}
@@ -222,23 +235,23 @@ GithubEventHarvester.prototype = {
 			if(res.statusCode !== 200){
 				debug.error(oOpts.url + ' HTTP status code: ' + res.statusCode + ' | ' + body);
 
-				_this.timers.getEvents = setTimeout(_this._getLatestGlobalEvents.bind(_this), iIterationInterval);
+				oTimers.getEvents = setTimeout(getLatestGlobalEvents.bind(_this), iIterationInterval);
 
 				return;
 			}
 
 			// Set up the next iteration right away without waiting to finish
 			// processing the current batch of events
-			_this.timers.getEvents = setTimeout(_this._getLatestGlobalEvents.bind(_this), iIterationInterval);
+			oTimers.getEvents = setTimeout(getLatestGlobalEvents.bind(_this), iIterationInterval);
 
 			// Start processing current batch of events
 			if(!aRawEvents || !_.isArray(aRawEvents) || !aRawEvents.length){
 				return;
 			}
 
-			_.forEach(aRawEvents, _this._processEvent.bind(_this));
+			_.forEach(aRawEvents, processEvent.bind(_this));
 		});
-	},
+	};
 
 
 	/**
@@ -249,9 +262,8 @@ GithubEventHarvester.prototype = {
 	 * 
 	 * @author Brad Beebe
 	 */
-	_processEvent: function(oEvent){
-		var _this = this,
-			oRepoBase,
+	function processEvent(oEvent){
+		var oRepoBase,
 			aRawMessages = [];
 
 		if(!oEvent || !_.isPlainObject(oEvent)){
@@ -262,7 +274,7 @@ GithubEventHarvester.prototype = {
 			id: oEvent.repo.id.toString(),
 			name: oEvent.repo.name,
 			url: 'https:/github.com/' + oEvent.repo.name,
-			langsUrl: oEvent.repo.url + this.settings.uris.languages,
+			langsUrl: oEvent.repo.url + oSettings.uris.languages,
 			langs: ''
 		};
 
@@ -349,7 +361,7 @@ GithubEventHarvester.prototype = {
 			return;
 		}
 
-		this._decorateRepo(oRepoBase, function(err, oRepo){
+		decorateRepo(oRepoBase, function(err, oRepo){
 			var aWords,
 				aWordEvents = [],
 				oWordEvents = {},
@@ -365,7 +377,7 @@ GithubEventHarvester.prototype = {
 				return;
 			}
 
-			aWords = _this._parseMessages(aRawMessages);
+			aWords = parseMessages(aRawMessages);
 
 			if(!aWords.length){
 				return;
@@ -405,9 +417,9 @@ GithubEventHarvester.prototype = {
 			sWordBatchKey = 'wordBatch:' + moment().tz('UTC').format('XSSS') + '_' + _.random(1, 9999) + '_' + _.random(1, 9999);
 
 			redisDb.hmset(sWordBatchKey, oWordEvents);
-			redisDb.expire(sWordBatchKey, _this.settings.ttl.word);
+			redisDb.expire(sWordBatchKey, oSettings.ttl.word);
 		});
-	},
+	};
 
 
 	/**
@@ -419,9 +431,8 @@ GithubEventHarvester.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_decorateRepo: function(oRepoBase, fnCallbackFinal){
-		var _this = this,
-			iRepoId,
+	function decorateRepo(oRepoBase, fnCallbackFinal){
+		var iRepoId,
 			sRepoKey;
 
 		if(!_.isFunction(fnCallbackFinal)){
@@ -481,14 +492,14 @@ GithubEventHarvester.prototype = {
 					// We only keep repo data for short amount of time as its
 					// metadata is not likely to change that much from minute
 					// to minute
-					redisDb.expire(sRepoKey, _this.settings.ttl.repo);
+					redisDb.expire(sRepoKey, oSettings.ttl.repo);
 
 					fnCallback(null, oRepoBase);
 				});
 			},
 			// If no repo language data found, send a request to its language API endpoint
 			function(oRepo, fnCallback){
-				var oOpts = _.clone(_this.settings.api.baseReqOpts);
+				var oOpts = _.clone(oSettings.api.baseReqOpts);
 
 				if(oRepo.langs.length){
 					fnCallback(null, oRepo);
@@ -580,7 +591,7 @@ GithubEventHarvester.prototype = {
 				fnCallback(null, oRepo);
 			}
 		], fnCallbackFinal);
-	},
+	};
 
 
 	/**
@@ -591,9 +602,8 @@ GithubEventHarvester.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_parseMessages: function(aRawMessages){
-		var _this = this,
-			aWords = [];
+	function parseMessages(aRawMessages){
+		var aWords = [];
 
 		if(!aRawMessages || !_.isArray(aRawMessages)){
 			return [];
@@ -611,7 +621,7 @@ GithubEventHarvester.prototype = {
 			aRawWords = _.filter(aRawWords, function(sWord){
 				iWordLength = sWord.length;
 				
-				return iWordLength >= _this.settings.wordLimits.min && iWordLength <= _this.settings.wordLimits.max;
+				return iWordLength >= oSettings.wordLimits.min && iWordLength <= oSettings.wordLimits.max;
 			});
 
 			_.forEach(aRawWords, function(sWord){
@@ -623,7 +633,10 @@ GithubEventHarvester.prototype = {
 		});
 
 		return aWords;
-	}
+	};
+
+
+	init();
 };
 
 module.exports = new GithubEventHarvester();

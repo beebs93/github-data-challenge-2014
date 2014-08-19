@@ -34,6 +34,7 @@ var $window = $(window),
 	Stage;
 
 
+
 /**
  * Main application controller
  * 
@@ -43,112 +44,129 @@ var $window = $(window),
  * @author Brad Beebe
  */
 App = function(oOpts){
-	var _this = this;
+	var _this = this,
+		socket,
+		hopper,
+		cpanel,
+		stage,
+		oDelays,
+		oTimers;
 
-	this._socket = io(oOpts.socketUrl),
-	this._hopper = new Hopper();
-	this._cpanel = new ControlPanel();
-	this._stage = new Stage();
-	this._delays = {
-		tick: oOpts.tickDelay,
-		stats: oOpts.statsDelay
-	};
-	this._timers = {
-		tick: null,
-		stats: null
-	};
 
-	this.renderMiniStats = _.throttle(this._cpanel.updateStatsView.bind(this._cpanel), this._delays.stats);
+	/**
+	 * Constructor init callback
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	function init(oOpts){
+		hopper = new Hopper();
+		cpanel = new ControlPanel();
+		stage = new Stage();
+		socket = io(oOpts.socketUrl),
 
-	this._cpanel.signal
-		.on('RemoteControl:Click', function(e, oData){
-			switch(oData.action){
-				default:
-					return;
+		oDelays = {
+			tick: oOpts.tickDelay,
+			stats: oOpts.statsDelay
+		};
 
-					break;
+		oTimers = {
+			tick: null,
+			stats: null
+		};
 
-				case 'play':
-					_this._hopper.keepLast(200);
+		_this.renderMiniStats = _.throttle(cpanel.updateStatsView.bind(cpanel), oDelays.stats);
 
-					_this._stage.toggleInspectionMode(false);
+		cpanel.signal
+			.on('RemoteControl:Click', function(e, oData){
+				switch(oData.action){
+					default:
+						return;
 
-					_this._cpanel.clearStats();
+						break;
 
-					_this._nextTick();
+					case 'play':
+						hopper.keepLast(200);
 
-					break;
+						stage.toggleInspectionMode(false);
 
-				case 'pause':
-					clearTimeout(_this._timers.tick);
+						cpanel.clearStats();
 
-					_this._cpanel.updateStatsView();
+						nextTick();
 
-					_this._stage.toggleInspectionMode(true);
+						break;
 
-					break;
-			}
-		})
-		.on('Filter:Languages:Updated', function(e, oData){
-			_this._stage.filterActors({
-				langs: oData.languages
+					case 'pause':
+						clearTimeout(oTimers.tick);
+
+						cpanel.updateStatsView();
+
+						stage.toggleInspectionMode(true);
+
+						break;
+				}
+			})
+			.on('Filter:Languages:Updated', function(e, oData){
+				stage.filterActors({
+					langs: oData.languages
+				});
+			})
+			.on('Filter:Words:Updated', function(e, oData){
+				stage.filterActors({
+					words: oData.words
+				});
 			});
-		})
-		.on('Filter:Words:Updated', function(e, oData){
-			_this._stage.filterActors({
-				words: oData.words
+
+		stage.signal
+			.on('Actor:Added', function(e, oData){
+				var aStats = cpanel.actorToStats(oData.actorData);
+
+				cpanel.addStats(aStats);
+
+				_this.renderMiniStats();
+			}).
+			on('Actor:Freed', function(e, oData){
+				var aStats = cpanel.actorToStats(oData.actorData);
+
+				cpanel.removeStats(aStats);
+
+				_this.renderMiniStats();
 			});
-		});
 
-	this._stage.signal
-		.on('Actor:Added', function(e, oData){
-			var aStats = _this._cpanel.actorToStats(oData.actorData);
+		socket
+			.on('connect_error', function(oError){
+				console.error('Could not connect to socketIO server', oError);
+			})
+			.on('connect', function(){
+				var aWordFilters = [
+						'and',
+						'are',
+						'for',
+						'from',
+						'of',
+						'that',
+						'the',
+						'this',
+						'with',
+						'use',
+						'you'
+					];
 
-			_this._cpanel.addStats(aStats);
+				console.info('SocketIO connected');
 
-			_this.renderMiniStats();
-		}).
-		on('Actor:Freed', function(e, oData){
-			var aStats = _this._cpanel.actorToStats(oData.actorData);
+				cpanel.addWordFilters(aWordFilters);
 
-			_this._cpanel.removeStats(aStats);
+				clearTimeout(oTimers.tick);
 
-			_this.renderMiniStats();
-		});
+				nextTick.apply(_this);
+			})
+			.on('App:GitHubEvents:Harvested', function(aWordEvents){
+				hopper.add(aWordEvents);
+			});
+	};
+	
 
-	this._socket
-		.on('connect_error', function(oError){
-			console.error('Could not connect to socketIO server', oError);
-		})
-		.on('connect', function(){
-			var aWordFilters = [
-					'and',
-					'are',
-					'for',
-					'from',
-					'of',
-					'that',
-					'the',
-					'this',
-					'with',
-					'use',
-					'you'
-				];
-
-			console.info('SocketIO connected');
-
-			_this._cpanel.addWordFilters(aWordFilters);
-
-			clearTimeout(_this._timers.tick);
-
-			_this._nextTick.apply(_this);
-		})
-		.on('App:GitHubEvents:Harvested', function(aWordEvents){
-			_this._hopper.add(aWordEvents);
-		});
-};
-
-App.prototype = {
 	/**
 	 * Processes the next word event in the hopper
 	 * 
@@ -156,22 +174,22 @@ App.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_nextTick: function(){
+	function nextTick(){
 		var oActorData,
 			oFilters,
 			aRepoLangs,
 			aValidLangs,
 			aLangButtons = [];
 
-		if(this._stage.isInspectionMode()){
+		if(stage.isInspectionModeActive()){
 			return;
 		}
 
-		oActorData = this._hopper.getOne();
-		oFilters = this._cpanel.getFilters();
+		oActorData = hopper.getOne();
+		oFilters = cpanel.getFilters();
 
 		if(!oActorData || !oActorData.word){
-			this._timers.tick = setTimeout(this._nextTick.bind(this), this._delays.tick);
+			oTimers.tick = setTimeout(nextTick.bind(_this), oDelays.tick);
 
 			return;
 		}
@@ -194,16 +212,20 @@ App.prototype = {
 			});
 		});
 
-		this._cpanel.addLanguageButtons(aLangButtons);
+		cpanel.addLanguageButtons(aLangButtons);
 
 		// Add the next item to the stage
-		this._stage.addActor(oActorData, {
-			filters: this._cpanel.getFilters()
+		stage.addActor(oActorData, {
+			filters: cpanel.getFilters()
 		});
 
-		this._timers.tick = setTimeout(this._nextTick.bind(this), this._delays.tick);
-	}
+		oTimers.tick = setTimeout(nextTick.bind(_this), oDelays.tick);
+	};
+
+
+	init(oOpts);
 };
+
 
 
 /**
@@ -214,13 +236,27 @@ App.prototype = {
  * @author Brad Beebe
  */
 Hopper = function(){
-	this._queue = [];
-	this._flags = {
-		canCollect: true
-	};
-};
+	var _this = this,
+		aQueue,
+		oFlags;
 
-Hopper.prototype = {
+
+	/**
+	 * Constructor init callback
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	function init(){
+		aQueue = [];
+
+		oFlags = {
+			canCollect: true
+		};
+	};
+
+
 	/**
 	 * Adds item(s) to the queue
 	 * 
@@ -229,10 +265,10 @@ Hopper.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	add: function(items){
+	this.add = function(items){
 		var aItems;
 
-		if(this._flags.canCollect !== true){
+		if(oFlags.canCollect !== true){
 			return;
 		}
 
@@ -244,8 +280,8 @@ Hopper.prototype = {
 			return;
 		}
 
-		this._queue = this._queue.concat(aItems);
-	},
+		aQueue = aQueue.concat(aItems);
+	};
 
 
 	/**
@@ -255,9 +291,9 @@ Hopper.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	getOne: function(){
-		return this._queue.shift();
-	},
+	this.getOne = function(){
+		return aQueue.shift();
+	};
 
 
 	/**
@@ -266,9 +302,9 @@ Hopper.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	empty: function(){
-		this._queue = [];
-	},
+	this.empty = function(){
+		aQueue = [];
+	};
 
 
 	/**
@@ -279,9 +315,9 @@ Hopper.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	keepLast: function(iNumRecentItems){
-		this._queue = this._queue.slice(-Math.abs(iNumRecentItems));
-	},
+	this.keepLast = function(iNumRecentItems){
+		aQueue = aQueue.slice(-Math.abs(iNumRecentItems));
+	};
 
 
 	/**
@@ -292,20 +328,24 @@ Hopper.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	toggle: function(sState){
+	this.toggle = function(sState){
 		switch(sState){
 			case 'open':
-				this._flags.canCollect = true;
+				oFlags.canCollect = true;
 
 				break;
 
 			case 'close':
-				this._flags.canCollect = false;
+				oFlags.canCollect = false;
 
 				break;
 		}
-	}
+	};
+
+
+	init();
 };
+
 
 
 /**
@@ -315,155 +355,168 @@ Hopper.prototype = {
  */
 ControlPanel = function(){
 	var _this = this,
-		$cpanel = $('#control-panel'),
+		$cpanel,
 		$langButtons,
 		$rcButtons,
 		$wordFilters,
-		$miniStats;
+		$miniStats,
+		oButtons,
+		oFilters,
+		oStats,
+		oFlags;
 
-	if(!$cpanel || $cpanel.length !== 1){
-		console.error('Invalid control panel');
+	/**
+	 * Constructor init callback
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	function init(){
+		_this.signal = $({});
 
-		return;
-	}
+		oButtons = {
+			langs: []
+		};
 
-	$langButtons = $cpanel.find('#lang-buttons');
+		oFilters = {
+			langs: [],
+			words: []
+		};
 
-	if(!$langButtons || $langButtons.length !== 1){
-		console.error('Missing language buttons container');
+		oStats = {
+			langs: [],
+			words: [],
+			repos: []
+		};
 
-		return;
-	}
+		oFlags = {
+			canAutoDisableLangs: false
+		};
 
-	$rcButtons = $cpanel.find('#remote-control');
+		$cpanel = $('#control-panel');
 
-	if(!$rcButtons || $rcButtons.length !== 1){
-		console.error('Missing remote control buttons container');
+		if(!$cpanel || $cpanel.length !== 1){
+			console.error('Invalid control panel');
 
-		return;
-	}
+			return;
+		}
 
-	$wordFilters = $cpanel.find('#words-filter');
+		$langButtons = $cpanel.find('#lang-buttons');
 
-	if(!$wordFilters || $wordFilters.length !== 1){
-		console.error('Missing word filter container');
+		if(!$langButtons || $langButtons.length !== 1){
+			console.error('Missing language buttons container');
 
-		return;
-	}
+			return;
+		}
 
-	$miniStats = $cpanel.find('#mini-stats-outer');
+		$rcButtons = $cpanel.find('#remote-control');
 
-	if(!$miniStats || $miniStats.length !== 1){
-		console.error('Missing mini stats container');
+		if(!$rcButtons || $rcButtons.length !== 1){
+			console.error('Missing remote control buttons container');
 
-		return;
-	}
+			return;
+		}
 
-	$cpanel
-		.on('click', '.global-lang-filter', function(e){
-			switch($(this).data('filterAction')){
-				default:
-					return;
+		$wordFilters = $cpanel.find('#words-filter');
 
-					break;
+		if(!$wordFilters || $wordFilters.length !== 1){
+			console.error('Missing word filter container');
 
-				case 'none':
-					_this._flags.canAutoDisableLangs = false;
+			return;
+		}
 
-					_this._filters.langs = [];
+		$miniStats = $cpanel.find('#mini-stats-outer');
 
-					_this._$langButtons
-						.find('li')
-						.removeClass('active-filter')
-						.data({
-							filterStatus: 0
+		if(!$miniStats || $miniStats.length !== 1){
+			console.error('Missing mini stats container');
+
+			return;
+		}
+
+		$cpanel
+			.on('click', '.global-lang-filter', function(e){
+				switch($(this).data('filterAction')){
+					default:
+						return;
+
+						break;
+
+					case 'none':
+						oFlags.canAutoDisableLangs = false;
+
+						oFilters.langs = [];
+
+						$langButtons
+							.find('li')
+							.removeClass('active-filter')
+							.data({
+								filterStatus: 0
+							});
+
+						break;
+
+					case 'all':
+						oFlags.canAutoDisableLangs = true;
+
+						oFilters.langs = [];
+
+						$langButtons.find('li').each(function(i, el){
+							var $el = $(el);
+
+							oFilters.langs.push($el.data('filterValue'));
+
+							$el
+								.addClass('active-filter')
+								.data({
+									filterStatus: 1
+								});
 						});
 
-					break;
+						break;
+				}
 
-				case 'all':
-					_this._flags.canAutoDisableLangs = true;
+				_this.signal.trigger('Filter:Languages:Updated', {
+					languages: oFilters.langs
+				});
+			})
+			.on('click', '#remote-control a', function(e){
+				var $this = $(this),
+					sAction = $this.data('controlAction');
 
-					_this._filters.langs = [];
+				$rcButtons
+					.find('a')
+					.removeClass('active-button')
+					.not($this)
+					.addClass('active-button');
 
-					_this._$langButtons.find('li').each(function(i, el){
-						var $el = $(el);
+				_this.signal.trigger('RemoteControl:Click', {
+					action: sAction
+				});
+			})
+			.on('keyup', '#new-word-filter', function(e){
+				if(e.keyCode !== 13){
+					return true;
+				}
 
-						_this._filters.langs.push($el.data('filterValue'));
+				processWordFilterInput();
 
-						$el
-							.addClass('active-filter')
-							.data({
-								filterStatus: 1
-							});
-					});
+				return false;
+			})
+			.on('click', '#new-word-filter + a', $.proxy(processWordFilterInput, _this));
 
-					break;
-			}
-
-			_this.signal.trigger('Filter:Languages:Updated', {
-				languages: _this._filters.langs
+		$langButtons
+			.on('click', 'li', function(e){
+				_this.toggleLanguageFilter($(this));
 			});
-		})
-		.on('click', '#remote-control a', function(e){
-			var $this = $(this),
-				sAction = $this.data('controlAction');
 
-			_this._$rcButtons
-				.find('a')
-				.removeClass('active-button')
-				.not($this)
-				.addClass('active-button');
-
-			_this.signal.trigger('RemoteControl:Click', {
-				action: sAction
+		$wordFilters
+			.on('click', 'li', function(e){
+				_this.removeWordFilters($(this).data('filter-value'));
 			});
-		})
-		.on('keyup', '#new-word-filter', function(e){
-			if(e.keyCode !== 13){
-				return true;
-			}
-
-			_this._processWordFilterInput();
-
-			return false;
-		})
-		.on('click', '#new-word-filter + a', $.proxy(this._processWordFilterInput, this));
-
-	$langButtons
-		.on('click', 'li', function(e){
-			_this.toggleLanguageFilter($(this));
-		});
-
-	$wordFilters
-		.on('click', 'li', function(e){
-			_this.removeWordFilters($(this).data('filter-value'));
-		});
-
-	this.signal = $({});
-	this._$cpanel = $cpanel;
-	this._$langButtons = $langButtons;
-	this._$rcButtons = $rcButtons;
-	this._$wordFilters = $wordFilters;
-	this._$miniStats = $miniStats;
-	this._buttons = {
-		langs: []
 	};
-	this._filters = {
-		langs: [],
-		words: []
-	};
-	this._stats = {
-		langs: [],
-		words: [],
-		repos: []
-	};
-	this._flags = {
-		canAutoDisableLangs: false
-	};
-};
 
-ControlPanel.prototype = {
+
 	/**
 	 * Adds the value of the word filter input field to the word filter
 	 * 
@@ -471,8 +524,8 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_processWordFilterInput: function(){
-		var $input = this._$cpanel.find('#new-word-filter'),
+	function processWordFilterInput(){
+		var $input = $cpanel.find('#new-word-filter'),
 			sWord = $input.val().trim().toLowerCase();
 
 		$input.val('');
@@ -481,8 +534,8 @@ ControlPanel.prototype = {
 			return;
 		}
 
-		this.addWordFilters(sWord);
-	},
+		_this.addWordFilters(sWord);
+	};
 
 
 	/**
@@ -493,7 +546,7 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_textToStatLabel: function(text){
+	function textToStatLabel(text){
 		var sLabel;
 
 		if(!_.isString(text)){
@@ -511,7 +564,7 @@ ControlPanel.prototype = {
 		}
 
 		return sLabel;
-	},
+	};
 
 
 	/**
@@ -521,11 +574,9 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_sortStats: function(){
-		var _this = this;
-
-		_.forIn(this._stats, function(aStats, sType){
-			_this._stats[sType] = _this._stats[sType].sort(function(a, b){
+	function sortStats(){
+		_.forIn(oStats, function(aStats, sType){
+			oStats[sType] = oStats[sType].sort(function(a, b){
 				if(a.value < b.value){
 					return 1;
 				}
@@ -537,11 +588,18 @@ ControlPanel.prototype = {
 				return 0;
 			});
 		});
-	},
+	};
 
 
-
-	actorToStats: function(oActorData){
+	/**
+	 * Breaks down an actor's data into an array of pertinent stat objects
+	 * 
+	 * @param  object oActorData
+	 * @return array
+	 *
+	 * @author Brad Beebe
+	 */
+	this.actorToStats = function(oActorData){
 		var aStats = [];
 
 		aStats.push({
@@ -563,8 +621,7 @@ ControlPanel.prototype = {
 		});
 
 		return aStats;
-	},
-
+	};
 
 
 	/**
@@ -574,9 +631,9 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	getFilters: function(){
-		return this._filters;
-	},
+	this.getFilters = function(){
+		return oFilters;
+	};
 
 
 	/**
@@ -587,7 +644,7 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	toggleLanguageFilter: function($el){
+	this.toggleLanguageFilter = function($el){
 		var oData = $el.data(),
 			sLangFilter = oData.filterValue,
 			iCurrentStatus = parseInt(oData.filterStatus, 10);
@@ -595,11 +652,11 @@ ControlPanel.prototype = {
 		if(iCurrentStatus === 0){
 			$el.addClass('active-filter');
 
-			this._filters.langs.push(sLangFilter);
+			oFilters.langs.push(sLangFilter);
 		}else{
 			$el.removeClass('active-filter');
 
-			_.pull(this._filters.langs, sLangFilter);
+			_.pull(oFilters.langs, sLangFilter);
 		}
 
 		$el.data({
@@ -607,13 +664,13 @@ ControlPanel.prototype = {
 		});
 
 		this.signal.trigger('Filter:Languages:Updated', {
-			languages: this._filters.langs
+			languages: oFilters.langs
 		});
 
-		if(!this._filters.langs.length && this._flags.canAutoDisableLangs === true){
-			this._flags.canAutoDisableLangs = false;
+		if(!oFilters.langs.length && oFlags.canAutoDisableLangs === true){
+			oFlags.canAutoDisableLangs = false;
 		}
-	},
+	};
 
 
 	/**
@@ -624,9 +681,8 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	addWordFilters: function(words){
-		var _this = this,
-			aNewWords,
+	this.addWordFilters = function(words){
+		var aNewWords,
 			aNewItems = [],
 			$items;
 
@@ -637,7 +693,7 @@ ControlPanel.prototype = {
 		}
 
 		aNewWords = _.filter(words, function(sWord){
-			return _.indexOf(_this._filters.words, sWord) === -1;
+			return _.indexOf(oFilters.words, sWord) === -1;
 		});
 
 		if(!aNewWords || !aNewWords.length){
@@ -648,16 +704,16 @@ ControlPanel.prototype = {
 			aNewItems.push('<li data-filter-value="' + sWord + '"><i class="fa fa-times"></i> ' + sWord + '</li>');
 		});
 
-		this._$wordFilters.append(aNewItems.join(''));
+		$wordFilters.append(aNewItems.join(''));
 
-		this._filters.words = this._filters.words.concat(aNewWords);
+		oFilters.words = oFilters.words.concat(aNewWords);
 
 		this.signal.trigger('Filter:Words:Updated', {
-			words: this._filters.words
+			words: oFilters.words
 		});
 
 		// Sort list of word filters alphabetically
-		$items = this._$wordFilters.find('li');
+		$items = $wordFilters.find('li');
 
 		$items.sort(function(a, b){
 			var sValueA = a.getAttribute('data-filter-value'),
@@ -670,8 +726,8 @@ ControlPanel.prototype = {
 			return sValueA > sValueB ? 1 : -1;
 		});
 
-		$items.detach().appendTo(this._$wordFilters);
-	},
+		$items.detach().appendTo($wordFilters);
+	};
 
 
 	/**
@@ -682,9 +738,8 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	removeWordFilters: function(words){
-		var _this = this,
-			aNewFilter;
+	this.removeWordFilters = function(words){
+		var aNewFilter;
 
 		if(_.isString(words)){
 			words = [words];
@@ -692,9 +747,9 @@ ControlPanel.prototype = {
 			return;
 		}
 
-		aNewFilter = _.difference(this._filters.words, words);
+		aNewFilter = _.difference(oFilters.words, words);
 
-		this._$wordFilters.find('li').each(function(i, el){
+		$wordFilters.find('li').each(function(i, el){
 			var $el = $(el),
 				sWordFilter = $el.data('filterValue');
 
@@ -705,12 +760,12 @@ ControlPanel.prototype = {
 			$el.remove();
 		});
 
-		this._filters.words = aNewFilter;
+		oFilters.words = aNewFilter;
 
 		this.signal.trigger('Filter:Words:Updated', {
-			words: this._filters.words
+			words: oFilters.words
 		});
-	},
+	};
 
 
 	/**
@@ -721,9 +776,8 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	addLanguageButtons: function(aLangButtons){
-		var _this = this,
-			aNewLangs,
+	this.addLanguageButtons = function(aLangButtons){
+		var aNewLangs,
 			aNewItems = [],
 			$items;
 
@@ -732,7 +786,7 @@ ControlPanel.prototype = {
 		}
 
 		aNewLangs = _.filter(aLangButtons, function(oLang){
-			return _.indexOf(_.pluck(_this._buttons.langs, 'value'), oLang.value) === -1;
+			return _.indexOf(_.pluck(oButtons.langs, 'value'), oLang.value) === -1;
 		});
 
 		if(!aNewLangs || !aNewLangs.length){
@@ -742,14 +796,14 @@ ControlPanel.prototype = {
 		_.forEach(aNewLangs, function(oLang){
 			aNewItems.push('<li data-filter-value="' + oLang.value + '" data-filter-status="0">' + oLang.label + '</li>');
 
-			if(_this._flags.canAutoDisableLangs){
-				_this._filters.langs.push(oLang.value);
+			if(oFlags.canAutoDisableLangs){
+				oFilters.langs.push(oLang.value);
 			}
 		});
 
 		$items = $(aNewItems.join(''));
 
-		if(this._flags.canAutoDisableLangs){
+		if(oFlags.canAutoDisableLangs){
 			$items
 				.addClass('active-filter')
 				.data({
@@ -757,12 +811,12 @@ ControlPanel.prototype = {
 				});
 		}
 
-		this._$langButtons.append($items);
+		$langButtons.append($items);
 
-		this._buttons.langs = this._buttons.langs.concat(aNewLangs);
+		oButtons.langs = oButtons.langs.concat(aNewLangs);
 
 		// Sort list of word filters alphabetically
-		$items = this._$langButtons.find('li');
+		$items = $langButtons.find('li');
 
 		$items.sort(function(a, b){
 			var sValueA = a.getAttribute('data-filter-value'),
@@ -775,13 +829,13 @@ ControlPanel.prototype = {
 			return sValueA > sValueB ? 1 : -1;
 		});
 
-		$items.detach().appendTo(this._$langButtons);
+		$items.detach().appendTo($langButtons);
 
 		// Ugh, I hate this hack
 		setTimeout(function(){
 			$items.addClass('added');
 		}, 100);
-	},
+	};
 
 
 	/**
@@ -792,9 +846,8 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	addStats: function(stats){
-		var _this = this,
-			aStats2Add;
+	this.addStats = function(stats){
+		var aStats2Add;
 
 		if(_.isString(stats)){
 			aStats2Add = [stats];
@@ -808,31 +861,31 @@ ControlPanel.prototype = {
 			var sLabel,
 				iIndex;
 
-			sLabel = _this._textToStatLabel(oStatI.label);
+			sLabel = textToStatLabel(oStatI.label);
 
 			if(!sLabel.length){
 				return true;
 			}
 
-			iIndex = _.findIndex(_this._stats[oStatI.type], function(oStatJ){
+			iIndex = _.findIndex(oStats[oStatI.type], function(oStatJ){
 				return oStatJ.label === sLabel;
 			});
 
 			if(iIndex !== -1){
-				_this._stats[oStatI.type][iIndex].value++;
+				oStats[oStatI.type][iIndex].value++;
 
 				return true;
 			}
 
-			_this._stats[oStatI.type].push({
+			oStats[oStatI.type].push({
 				label: sLabel,
 				value: 1,
 				url: _.isUndefined(oStatI.url) ? '' : oStatI.url
 			});
 		});
 
-		this._sortStats();
-	},
+		sortStats();
+	};
 
 
 	/**
@@ -843,9 +896,8 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	removeStats: function(stats){
-		var _this = this,
-			aStats2Remove;
+	this.removeStats = function(stats){
+		var aStats2Remove;
 
 		if(_.isString(stats)){
 			aStats2Remove = [stats];
@@ -859,13 +911,13 @@ ControlPanel.prototype = {
 			var sLabel,
 				iIndex;
 
-			sLabel = _this._textToStatLabel(oStatI.label);
+			sLabel = textToStatLabel(oStatI.label);
 
 			if(!sLabel.length){
 				return true;
 			}
 
-			iIndex = _.findIndex(_this._stats[oStatI.type], function(oStatJ){
+			iIndex = _.findIndex(oStats[oStatI.type], function(oStatJ){
 				return oStatJ.label === sLabel;
 			});
 
@@ -873,11 +925,11 @@ ControlPanel.prototype = {
 				return true;
 			}
 
-			_this._stats[oStatI.type][iIndex].value = Math.max(0, _this._stats[oStatI.type][iIndex].value - 1);
+			oStats[oStatI.type][iIndex].value = Math.max(0, oStats[oStatI.type][iIndex].value - 1);
 		});
 
-		this._sortStats();
-	},
+		sortStats();
+	};
 
 
 	/**
@@ -887,13 +939,11 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	clearStats: function(){
-		var _this = this;
-
-		_.forIn(this._stats, function(aStats, sType){
-			_this._stats[sType] = [];
+	this.clearStats = function(){
+		_.forIn(oStats, function(aStats, sType){
+			oStats[sType] = [];
 		});
-	},
+	};
 
 
 	/**
@@ -903,23 +953,22 @@ ControlPanel.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	updateStatsView: function(){
-		var _this = this,
-			aStats = [],
+	this.updateStatsView = function(){
+		var aStats = [],
 			aLangStats,
 			aWordStats,
 			aRepoStats,
 			iTotalWords;
 
-		aLangStats = _.filter(this._stats.langs, function(oStat){
+		aLangStats = _.filter(oStats.langs, function(oStat){
 			return oStat.value > 0;
 		});
 
-		aWordStats = _.filter(this._stats.words, function(oStat){
+		aWordStats = _.filter(oStats.words, function(oStat){
 			return oStat.value > 0;
 		}).slice(0, 10);
 
-		aRepoStats = _.filter(this._stats.repos, function(oStat){
+		aRepoStats = _.filter(oStats.repos, function(oStat){
 			return oStat.value > 0;
 		});
 
@@ -940,7 +989,7 @@ ControlPanel.prototype = {
 
 		_.forEach(aStats, function(oStatsInfo){
 			var sType = oStatsInfo.type,
-				$statsList = _this._$miniStats.find('#top-' + sType),
+				$statsList = $miniStats.find('#top-' + sType),
 				aValues = _.pluck(oStatsInfo.stats, 'value'),
 				iTotal;
 
@@ -1002,8 +1051,12 @@ ControlPanel.prototype = {
 				});
 			});
 		});
-	}
+	};
+
+
+	init();
 };
+
 
 
 /**
@@ -1013,52 +1066,73 @@ ControlPanel.prototype = {
  */
 Stage = function(){
 	var _this = this,
-		$stage = $('#stage'),
-		$actorTpl;
+		$stage,
+		$actorTpl,
+		aActors,
+		oDimensions,
+		oFlags,
+		oTimers;
 
-	if(!$stage || $stage.length !== 1){
-		console.error('Invalid stage');
 
-		return;
-	}
+	/**
+	 * Constructor init callback
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	function init(){
+		var _$actorTpl;
 
-	$actorTpl = $stage.find('#actor-template');
+		_this.signal = $({});
+		
+		aActors = [];
 
-	if(!$actorTpl || $actorTpl.length !== 1){
-		console.error('Invalid stage actor template');
+		oDimensions = {
+			stage: {
+				width: null,
+				height: null
+			}
+		};
 
-		return;
-	}
+		oFlags = {
+			isInspectionMode: false
+		};
 
-	this.signal = $({});
-	this._$stage = $stage;
-	this._actors = [];
-	this._$actorTpl = $actorTpl.removeAttr('id').clone(false);
-	this._dimensions = {
-		stage: {
-			width: null,
-			height: null
+		oTimers = {
+			windowResize: null
+		};
+
+		$stage = $('#stage');
+
+		if(!$stage || $stage.length !== 1){
+			console.error('Invalid stage');
+
+			return;
 		}
+
+		_$actorTpl = $stage.find('#actor-template');
+
+		if(!_$actorTpl || _$actorTpl.length !== 1){
+			console.error('Invalid stage actor template');
+
+			return;
+		}
+		
+		$actorTpl = _$actorTpl.removeAttr('id').clone(false);
+
+		$window.on('resize', function(e){
+			clearTimeout(oTimers.windowResize);
+
+			oTimers.windowResize = setTimeout(calcDimensions.bind(_this), 500);
+		});
+
+		calcDimensions();
+
+		$actorTpl.remove();
 	};
-	this._flags = {
-		isInspectionMode: false
-	};
-	this._timers = {
-		windowResize: null
-	};
 
-	$window.on('resize', function(e){
-		clearTimeout(_this._timers.windowResize);
 
-		_this._timers.windowResize = setTimeout(_this._calcDimensions.bind(_this), 500);
-	});
-
-	this._calcDimensions();
-
-	$actorTpl.remove();
-};
-
-Stage.prototype = {
 	/**
 	 * Caclulates and records any DOM element dimensions
 	 * 
@@ -1066,14 +1140,14 @@ Stage.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_calcDimensions: function(){
-		_.merge(this._dimensions, {
+	function calcDimensions(){
+		_.merge(oDimensions, {
 			stage: {
-				width: this._$stage.outerWidth(),
-				height: this._$stage.outerHeight()
+				width: $stage.outerWidth(),
+				height: $stage.outerHeight()
 			}
 		});
-	},
+	};
 
 
 	/**
@@ -1083,10 +1157,10 @@ Stage.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_getFreeActor: function(){
+	function getFreeActor(){
 		var $actor;
 
-		$actor = _.find(this._actors, function($el){
+		$actor = _.find(aActors, function($el){
 			if($el._isFree !== true){
 				return false;
 			}
@@ -1097,17 +1171,17 @@ Stage.prototype = {
 		});
 
 		if(_.isUndefined($actor)){
-			$actor = this._$actorTpl.clone(false);
+			$actor = $actorTpl.clone(false);
 
-			this._actors.push($actor);
+			aActors.push($actor);
 
-			this._$stage.append($actor);
+			$stage.append($actor);
 		}
 
-		this._clearActor($actor);
+		clearActor($actor);
 
 		return $actor;
-	},
+	};
 
 
 	/**
@@ -1118,7 +1192,7 @@ Stage.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	_clearActor: function($actor){
+	function clearActor($actor){
 		$actor
 			.data({
 				wordEvent: null
@@ -1129,21 +1203,20 @@ Stage.prototype = {
 			.find('.event-word, .repo-langs, .event-url, .repo-url')
 			.html('')
 			.filter('.event-url, .repo-url')
-			.attr('href', '#');
+			.attr('href', 'javascript:{};');
 
 		$actor._isFree = false;
-	},
+	};
 
 
 	/**
-	 * Positions an actor in its starting place
+	 * Prepars an actor for animation
 	 * 
 	 * @param  object $actor - jQuery element
 	 * @return void
 	 */
-	_positionActor: function($actor){
-		var iWidth,
-			zIndex = _.random(1, 10),
+	function prepareActor($actor){
+		var zIndex = _.random(1, 10),
 			sLayerType = 'layer-';
 
 		if(zIndex <= 3){
@@ -1158,15 +1231,13 @@ Stage.prototype = {
 			.find('.actor-inner')
 			.addClass(sLayerType);
 
-		iWidth = $actor.outerWidth();
-
 		$actor
 			.css({
-				left: _.random(0, (this._dimensions.stage.width - iWidth)),
+				left: _.random(0, (oDimensions.stage.width - $actor.outerWidth())),
 				zIndex: zIndex,
 				transform: ''
 			});
-	},
+	};
 
 
 	/**
@@ -1179,11 +1250,10 @@ Stage.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	addActor: function(oData, oOpts){
+	this.addActor = function(oData, oOpts){
 		oOpts = oOpts || {};
 
-		var _this = this,
-			oFilters = oOpts.filters || {},
+		var oFilters = oOpts.filters || {},
 			aLangFilters = oFilters.langs || [],
 			aWordFilters = oFilters.words || [],
 			iHeight,
@@ -1191,9 +1261,10 @@ Stage.prototype = {
 			iDuration,
 			aLangMatchList,
 			aRepoLangs,
-			aLangDiff;
+			aLangDiff,
+			$actor;
 
-		if(!oData || !_.isPlainObject(oData) || this._flags.isInspectionMode === true){
+		if(!oData || !_.isPlainObject(oData) || oFlags.isInspectionMode === true){
 			return;
 		}
 
@@ -1217,7 +1288,7 @@ Stage.prototype = {
 			return;
 		}
 
-		var $actor = this._getFreeActor();
+		$actor = getFreeActor();
 
 		$actor
 			.data({
@@ -1244,7 +1315,7 @@ Stage.prototype = {
 			})
 			.html(oData.repo.name + ' <i class="fa fa-external-link"></i>');
 
-		this._positionActor($actor);
+		prepareActor($actor);
 
 		iLayerIndex = parseInt($actor.css('zIndex'), 10);
 
@@ -1261,7 +1332,7 @@ Stage.prototype = {
 		$actor
 			.addClass('actor-positioned')
 			.velocity({
-				translateY: [(this._dimensions.stage.height + (iHeight * 2)), -iHeight]
+				translateY: [(oDimensions.stage.height + (iHeight * 2)), -iHeight]
 			},{
 				complete: function(){
 					$actor._isFree = true;
@@ -1277,7 +1348,7 @@ Stage.prototype = {
 		this.signal.trigger('Actor:Added', {
 			actorData: oData
 		});
-	},
+	};
 
 
 	/**
@@ -1289,7 +1360,7 @@ Stage.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	filterActors: function(oFilters){
+	this.filterActors = function(oFilters){
 		oFilters = oFilters || {};
 
 		var aRepoLangs,
@@ -1298,7 +1369,7 @@ Stage.prototype = {
 			iNumLangMatchList = aLangMatchList.length,
 			iNumWordsMatchList = aWordMatchList.length;
 
-		_.forEach(this._actors, function($el){
+		_.forEach(aActors, function($el){
 			var oWordEvent = $el.data('wordEvent'),
 				aLangDiff,
 				bMatchesLangFilter = false,
@@ -1328,7 +1399,7 @@ Stage.prototype = {
 				$el.removeClass('filter-match');
 			}
 		});
-	},
+	};
 
 
 	/**
@@ -1339,7 +1410,7 @@ Stage.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	toggleInspectionMode: function(bEnable){
+	this.toggleInspectionMode = function(bEnable){
 		var $actors;
 
 		switch(bEnable){
@@ -1349,7 +1420,7 @@ Stage.prototype = {
 				break;
 
 			case true:
-				$actors = this._$stage
+				$actors = $stage
 							.find('.actor')
 							.velocity('stop');
 
@@ -1364,9 +1435,9 @@ Stage.prototype = {
 					return sValueA > sValueB ? 1 : -1;
 				});
 
-				$actors.detach().appendTo(this._$stage);
+				$actors.detach().appendTo($stage);
 
-				this._actors = _.filter(this._actors, function($el){
+				aActors = _.filter(aActors, function($el){
 					if($el._isFree === true){
 						$el.remove();
 
@@ -1381,20 +1452,20 @@ Stage.prototype = {
 				break;
 
 			case false:
-				this._$stage
+				$stage
 					.find('.actor')
 					.velocity('stop')
 					.remove();
 
-				this._actors = [];
+				aActors = [];
 
 				$('body').removeClass('inspection-mode');
 
 				break;
 		}
 
-		this._flags.isInspectionMode = bEnable;
-	},
+		oFlags.isInspectionMode = bEnable;
+	};
 
 
 	/**
@@ -1404,9 +1475,12 @@ Stage.prototype = {
 	 *
 	 * @author Brad Beebe
 	 */
-	isInspectionMode: function(){
-		return this._flags.isInspectionMode;
-	}
+	this.isInspectionModeActive = function(){
+		return oFlags.isInspectionMode;
+	};
+
+
+	init();
 };
 
 })(jQuery);
