@@ -11,7 +11,7 @@ Requirements
 --------------
 - `git v1.8.5.2+`
 - `node.js v0.10.28+`
-- `Redis Server v2.6.14+`
+- `Redis v2.6.14+`
 - `Grunt CLI v0.1.13+`
 
 Installation
@@ -19,6 +19,8 @@ Installation
 - [Download and install git](http://git-scm.com/downloads)
 
 - [Download and install node.js](http://nodejs.org/download/)
+
+- [Download and install Redis](http://redis.io/download)
 
 - Install the `grunt-cli` npm module globally
 
@@ -43,12 +45,6 @@ Get Started (Local Environment)
 - Make a copy of the `oauth.template.json` file and save it as `oauth.json`
 
 - Open the `oauth.json` file then replace `"ENTER_YOUR_CLIENT_ID"` and `"ENTER_YOUR_CLIENT_SECRET"` with the ones from your GitHub OAuth application
-
-- Install the `redis-server` npm module globally
-
-```sh
-npm install -g redis-server
-```
 
 - Open a new Terminal window and start the Redis server
 
