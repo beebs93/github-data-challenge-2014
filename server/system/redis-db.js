@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
 	sAppDir = path.dirname(require.main.filename),
 	redis = require('redis'),

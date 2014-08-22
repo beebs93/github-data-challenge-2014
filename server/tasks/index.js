@@ -1,6 +1,7 @@
+'use strict';
+
 var path = require('path'),
 	sAppDir = path.dirname(require.main.filename),
-	config = require(sAppDir + '/server/system/config'),
 	debug = require(sAppDir + '/server/system/debug'),
 	harvester = require(sAppDir + '/server/libraries/github-event-harvester');
 

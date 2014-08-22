@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(grunt){
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -12,7 +14,7 @@ module.exports = function(grunt){
 				options: {
 					separator: ';',
 					stripBanners: true,
-					process: function(src, filepath){
+					process: function(src){
 						return src.replace(/("|')use strict\1;?/g, '');
 					}
 				},

@@ -1,5 +1,7 @@
+'use strict';
+
 var _ = require('lodash'),
-	XRegExp = require('xregexp').XRegExp;
+	xRegExp = require('xregexp').XRegExp;
 
 module.exports = {
 	/**
@@ -18,8 +20,8 @@ module.exports = {
 		sWord = sWord
 					.replace(/[\r\n\t]/gm, ' ');
 
-		sWord = XRegExp
-					.replace(sWord, XRegExp('/[^a-z0-9_#\-\+\s\p{L}]/', 'ig'), ' ');
+		sWord = xRegExp
+					.replace(sWord, xRegExp('/[^a-z0-9_#\-\+\s\p{L}]/', 'ig'), ' ');
 
 		sWord = sWord
 					.replace(/\\n/g, ' ')

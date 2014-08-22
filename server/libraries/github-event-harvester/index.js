@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
 	sAppDir = path.dirname(require.main.filename),
 	_ = require('lodash'),
@@ -75,7 +77,7 @@ function GithubEventHarvester(){
 			isGettingEvents: false,
 			isStopped: true
 		};
-	};
+	}
 
 
 	/**
@@ -191,16 +193,12 @@ function GithubEventHarvester(){
 					default:
 						return false;
 
-						break;
-
 					case 'IssueCommentEvent':
 					case 'IssuesEvent':
 					case 'PullRequestEvent':
 					case 'PullRequestReviewCommentEvent':
 					case 'PushEvent':
 						return true;
-
-						break;
 				}
 			});
 
@@ -251,7 +249,7 @@ function GithubEventHarvester(){
 
 			_.forEach(aRawEvents, processEvent.bind(_this));
 		});
-	};
+	}
 
 
 	/**
@@ -281,8 +279,6 @@ function GithubEventHarvester(){
 		switch(oEvent.type){
 			default:
 				return true;
-
-				break;
 
 			case 'IssueCommentEvent':
 				if(oEvent.payload.action !== 'created'){
@@ -419,7 +415,7 @@ function GithubEventHarvester(){
 			redisDb.hmset(sWordBatchKey, oWordEvents);
 			redisDb.expire(sWordBatchKey, oSettings.ttl.word);
 		});
-	};
+	}
 
 
 	/**
@@ -591,7 +587,7 @@ function GithubEventHarvester(){
 				fnCallback(null, oRepo);
 			}
 		], fnCallbackFinal);
-	};
+	}
 
 
 	/**
@@ -610,7 +606,8 @@ function GithubEventHarvester(){
 		}
 
 		_.forEach(aRawMessages, function(oMsg){
-			var aRawWords;
+			var aRawWords,
+				iWordLength;
 
 			if(!oMsg.text.length){
 				return true;
@@ -629,14 +626,14 @@ function GithubEventHarvester(){
 					text: sWord,
 					eventUrl: oMsg.eventUrl
 				});
-			})
+			});
 		});
 
 		return aWords;
-	};
+	}
 
 
 	init();
-};
+}
 
 module.exports = new GithubEventHarvester();

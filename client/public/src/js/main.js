@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var App;
 
@@ -64,7 +64,7 @@ App = function(oOpts){
 		hopper = new Hopper();
 		cpanel = new ControlPanel();
 		stage = new Stage();
-		socket = io(oOpts.socketUrl),
+		socket = io(oOpts.socketUrl);
 
 		oDelays = {
 			tick: oOpts.tickDelay,
@@ -83,8 +83,6 @@ App = function(oOpts){
 				switch(oData.action){
 					default:
 						return;
-
-						break;
 
 					case 'play':
 						hopper.keepLast(200);
@@ -176,7 +174,7 @@ App = function(oOpts){
 			.on('App:GitHubEvents:Harvested', function(aWordEvents){
 				hopper.add(aWordEvents);
 			});
-	};
+	}
 	
 
 	/**
@@ -232,7 +230,7 @@ App = function(oOpts){
 		});
 
 		oTimers.tick = setTimeout(nextTick.bind(_this), oDelays.tick);
-	};
+	}
 
 
 	init(oOpts);
@@ -266,7 +264,7 @@ Hopper = function(){
 		oFlags = {
 			canCollect: true
 		};
-	};
+	}
 
 
 	/**
@@ -452,8 +450,6 @@ ControlPanel = function(){
 					default:
 						return;
 
-						break;
-
 					case 'none':
 						oFlags.canAutoDisableLangs = false;
 
@@ -526,7 +522,7 @@ ControlPanel = function(){
 			.on('click', 'li', function(e){
 				_this.removeWordFilters($(this).data('filter-value'));
 			});
-	};
+	}
 
 
 	/**
@@ -547,7 +543,7 @@ ControlPanel = function(){
 		}
 
 		_this.addWordFilters(sWord);
-	};
+	}
 
 
 	/**
@@ -576,7 +572,7 @@ ControlPanel = function(){
 		}
 
 		return sLabel;
-	};
+	}
 
 
 	/**
@@ -600,7 +596,7 @@ ControlPanel = function(){
 				return 0;
 			});
 		});
-	};
+	}
 
 
 	/**
@@ -1142,7 +1138,7 @@ Stage = function(){
 		calcDimensions();
 
 		$actorTpl.remove();
-	};
+	}
 
 
 	/**
@@ -1159,7 +1155,7 @@ Stage = function(){
 				height: $stage.outerHeight()
 			}
 		});
-	};
+	}
 
 
 	/**
@@ -1193,7 +1189,7 @@ Stage = function(){
 		clearActor($actor);
 
 		return $actor;
-	};
+	}
 
 
 	/**
@@ -1215,10 +1211,10 @@ Stage = function(){
 			.find('.event-word, .repo-langs, .event-url, .repo-url')
 			.html('')
 			.filter('.event-url, .repo-url')
-			.attr('href', 'javascript:{};');
+			.attr('href', '#');
 
 		$actor._isFree = false;
-	};
+	}
 
 
 	/**
@@ -1249,7 +1245,7 @@ Stage = function(){
 				zIndex: zIndex,
 				transform: ''
 			});
-	};
+	}
 
 
 	/**
@@ -1431,8 +1427,6 @@ Stage = function(){
 		switch(bEnable){
 			default:
 				return;
-
-				break;
 
 			case true:
 				$actors = $stage

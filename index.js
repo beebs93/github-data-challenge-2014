@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
 	sAppDir = path.dirname(require.main.filename),
 	_ = require('lodash'),
@@ -16,7 +18,6 @@ var path = require('path'),
 	tasks = require(sAppDir + '/server/tasks'),
 	routes = require(sAppDir + '/server/routes'),
 	app,
-	server,
 	io;
 
 
@@ -65,7 +66,7 @@ app.use('*', router);
  *****************************************************************************/
 io = require('socket.io')(config.servers.socketio.port);
 
-io.on('connection', function(socket){
+io.on('connection', function(){
 	debug.info('Client connected', 'socketio');
 
 	// We initially send the client the stored list of the recent word events
@@ -87,8 +88,7 @@ io.on('connection', function(socket){
 			});
 		},
 		function(aKeys, fnCallbackI){
-			var aCallbacks = [],
-				aWordEvents = [];
+			var aCallbacks = [];
 
 			_.forEach(aKeys, function(sKey){
 				aCallbacks.push(function(fnCallbackJ){

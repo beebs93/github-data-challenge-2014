@@ -1,8 +1,4 @@
-var path = require('path'),
-	sAppDir = path.dirname(require.main.filename),
-	_ = require('lodash'),
-	config = require(sAppDir + '/server/system/config'),
-	debug = require(sAppDir + '/server/system/debug');
+'use strict';
 
 module.exports = {
 	/**

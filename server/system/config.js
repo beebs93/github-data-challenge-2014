@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
 	sAppDir = path.dirname(require.main.filename),
 	_ = require('lodash'),
@@ -52,7 +54,7 @@ function Config(){
 			}
 		}
 	});
-};
+}
 
 
 // Default/fallback config settings
@@ -78,7 +80,7 @@ function DefaultConfig(){
 			}
 		}
 	});
-};
+}
 
 DefaultConfig.prototype = new Config();
 
@@ -91,7 +93,7 @@ switch(process.env.NODE_ENV){
 		config = new DefaultConfig();
 
 		break;
-};
+}
 
 try{
 	oauth = require(sAppDir + '/oauth.json');
