@@ -4,7 +4,7 @@ var path = require('path'),
 	config = require(sAppDir + '/server/system/config'),
 	debug = require(sAppDir + '/server/system/debug'),
 	appEvents = require(sAppDir + '/server/system/app-events'),
-	redisClient = redis.createClient(),
+	redisClient = redis.createClient(config.db.redis.port, config.db.redis.host),
 	sLog = 'redis';
 
 redisClient
