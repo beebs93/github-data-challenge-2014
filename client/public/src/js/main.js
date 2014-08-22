@@ -1361,9 +1361,12 @@ Stage = function(){
 				complete: function(){
 					$actor._isFree = true;
 
+					// While we prevent new actors from increased the mini stats
+					// we want freed actors to propertly reflect their departure
+					// from the stage
 					_this.signal.trigger('Actor:Freed', {
-						actorData: oData,
-						isFilterMatch: $actor.hasClass('filter-match')
+						actorData: oData
+						isFilterMatch: false
 					});
 				},
 				duration: iDuration,
