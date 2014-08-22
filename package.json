@@ -4,6 +4,7 @@
   "description": "Brad Beebe’s GitHub 2014 Data Challenge submission",
   "main": "index.js",
   "author": "Brad Beebe",
+  "repository": "https://github.com/beebs93/github-data-challenge-2014",
   "license": "GPL/MIT",
   "dependencies": {
     "async": "^0.9.0",
