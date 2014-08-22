@@ -33,6 +33,9 @@ function Config(){
 				maxReqsPerHour: 5000,
 				reqTimeoutMS: 10000
 			},
+			thresholds: {
+				minLangPct: 10
+			},
 			ttl: {
 				repoSEC: null,
 				wordSEC: null

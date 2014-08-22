@@ -542,9 +542,9 @@ function GithubEventHarvester(){
 
 						return;
 					}
-
+					
 					_.forIn(oResp, function(iTotal, sLang){
-						if((iTotal / iLangsTotal) * 100 < 10){
+						if((iTotal / iLangsTotal) * 100 < config.github.thresholds.minLangPct){
 							return true;
 						}
 
