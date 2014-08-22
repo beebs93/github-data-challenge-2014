@@ -30,8 +30,8 @@ input[type="email"],
 input[type="tel"],
 select,
 textarea{
+	@extend %border-general;
 	padding: 0.25em 0.5em;
-	border: 1px solid #000;
 	outline: none;
 }
 

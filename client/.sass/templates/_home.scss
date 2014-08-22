@@ -10,7 +10,6 @@
 			height: 100%;
 			padding: 1em;
 			@include box-shadow(0 0 3em 0.25em #fff);
-			background: rgba(#fff, 0.9);
 			position: absolute;
 			top: 0;
 			z-index: 2;
@@ -18,6 +17,7 @@
 		}
 
 		.filter-col:first-of-type{
+			min-width: 8.125em;
 			left: 0;
 		}
 
@@ -30,22 +30,27 @@
 		}
 
 		.global-lang-filter{
+			@extend %transparent-glow;
 			width: 50%;
 			padding: 0.4em 0;
-			background: #fff;
 			display: inline-block;
 			font-size: 1.5rem;
 			text-align: center;
 		}
 
+		.global-lang-filter:hover{
+			color: $rgbaHoverGeneral;
+		}
+
 		.lang-buttons{
+			@extend %transparent-glow;
 			margin-top: 1em;
 			clear: both;
 
 			li{
+				@extend %border-general;
 				margin: 0.5em 0 0;
 				padding: 0.5em;
-				border: 1px solid #000;
 				background: #fff;
 				display: block;
 				cursor: pointer;
@@ -55,6 +60,10 @@
 
 			li:first-child{
 				margin-top: 0;
+			}
+
+			li:hover{
+				@extend %btn-hover-general;
 			}
 
 			li.added{
@@ -88,19 +97,34 @@
 			}
 		}
 
+		.fitler-input-field{
+			@extend %transparent-glow;
+		}
+
+		.fitler-input-field a:hover{
+			color: $rgbaHoverGeneral;
+		}
+
 		.words-filter{
+			@extend %transparent-glow;
 			margin-bottom: 1.5em;
 
 			li{
-				margin-top: 0.25em;
+				padding-top: 0.25em;
+				background: rgba(#fff, 0.8);
 				display: block;
 				line-height: 1;
 				cursor: pointer;
+			}
+
+			li:hover i{
+				color: $rgbaHoverGeneral;
 			}
 		}
 
 		.mini-stats-outer{
 			@extend %clearfix;
+			@extend %transparent-glow;
 		}
 
 		.mini-stats{
@@ -109,9 +133,10 @@
 		}
 
 		.stat-item{
+			@extend %border-general;
 			margin-top: 0.25em;
 			padding: 0.15em 0.25em;
-			border: 1px solid #000;
+			background: #fff;
 			position: relative;
 			top: 0;
 			left: 0;
@@ -126,8 +151,21 @@
 			margin-top: 0;
 		}
 
+		.stat-item[data-stat-type="repos"]:hover{
+			@extend %btn-hover-general;
+		}
+
+		.stat-item[data-stat-type="repos"]:hover .stat-label{
+			color: $colorHoverGeneral;
+		}
+
 		.stat-item-child{
 			display: block;
+		}
+
+		.stat-list-title{
+			font-size: 1.125em;
+			font-weight: 700;
 		}
 
 		.stat-bar{
@@ -140,7 +178,7 @@
 		}
 
 		.stat-label{
-			max-width: 10em;
+			max-width: 14em;
 			overflow: hidden;
 			line-height: 1;
 			white-space: nowrap;
@@ -173,8 +211,8 @@
 
 		.actor-inner{
 			padding: 1em;
-			border: 1px solid #000;
-			background: #fff;
+			border: 1px solid #cecece;
+			background: #fafafa;
 			@include transition(border 350ms linear);
 		}
 
@@ -203,6 +241,10 @@
 
 		.actor-meta:first-child{
 			margin-top: 0;
+		}
+
+		.event-word{
+			font-family: $fontMonospace;
 		}
 
 		.repo-langs{
@@ -236,6 +278,7 @@
 	}
 
 	.stage{
+		max-width: 500px;
 		height: auto;
 		padding-top: 4em;
 		padding-bottom: 2em;

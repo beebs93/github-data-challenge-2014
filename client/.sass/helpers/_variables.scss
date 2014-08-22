@@ -1,19 +1,26 @@
 // Fonts
 $fontArial: Arial, Helvetica, sans-serif;
+$fontCourier: "Courier New", monospace;
+$fontSansSerif: Cousine, $fontArial;
+$fontMonospace: "Varela Round", $fontCourier;
 $fontWeightLight: 400;
 $fontWeightRegular: 500;
 $fontWeightBold: 900;
 
 // Colors
-$colorGrayUI: #6d6d6d;
+$colorHoverGeneral: #fff;
+$rgbaHoverGeneral: rgba(0, 0, 0, 0.5);
 
 // Base
 $baseBodyBgColor: #fff;
 $baseFontSize: 16px;
 $baseLineHeight: 1.25;
-$baseFontStack: $fontArial;
+$baseFontStack: $fontSansSerif;
 $baseFontWeight: $fontWeightRegular;
 $baseFontColor: #000;
+
+// UI
+$borderRadiusDefault: 0.3125em;
 
 // Breakpoints
 $mobile-wide: 500px;

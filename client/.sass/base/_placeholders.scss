@@ -42,11 +42,22 @@
 	@include transform-style(preserve-3d);
 }
 
-%btn-general{
-	display: inline-block;
+%btn-hover-general{
+	background-color: $rgbaHoverGeneral;
+	color: $colorHoverGeneral;
 }
 
 %block-reponsive{
 	max-width: 100%;
 	height: auto;
+}
+
+%border-general{
+	border: 1px solid #000;
+	border-radius: $borderRadiusDefault;
+}
+
+%transparent-glow{
+	@include box-shadow(0 0 3em 0.25em #fff);
+	background: rgba(#fff, 0.6);
 }

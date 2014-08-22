@@ -6,9 +6,9 @@
 <div id="control-panel" class="control-panel">
 	<div class="filter-col">
 		<div class="global-lang-filters">
-			<a class="global-lang-filter" href="javascript:{}" data-filter-action="all">
+			<a class="global-lang-filter" href="javascript:{}" data-filter-action="all" title="Filters out all languages and auto-filters any new ones">
 				<i class="fa fa-check-square-o"></i>
-			</a><a class="global-lang-filter" href="javascript:{}" data-filter-action="none">
+			</a><a class="global-lang-filter" href="javascript:{}" data-filter-action="none" title="Allows all languages and auto-allows any new ones">
 				<i class="fa fa-square-o"></i>
 			</a>
 		</div>
@@ -17,16 +17,16 @@
 	</div>
 
 	<div id="remote-control" class="remote-control">
-		<a class="control-button active-button" href="javascript:{}" data-control-action="pause"><i class="fa fa-search"></i></a>
+		<a class="control-button active-button" href="javascript:{}" data-control-action="pause" title="Pauses all animations and shows more detailed information about each word"><i class="fa fa-search"></i></a>
 
-		<a class="control-button" href="javascript:{}" data-control-action="play"><i class="fa fa-play"></i></a>
+		<a class="control-button" href="javascript:{}" data-control-action="play" title="Resumes the animations and shows only the words"><i class="fa fa-play"></i></a>
 	</div>
 
 	<div class="filter-col">
 		<div class="fitler-input-field">
 			<input id="new-word-filter" name="new-word-filter" type="text" value="" placeholder="Enter a word" />
 
-			<a href="javascript:{};"><i class="fa fa-plus"></i></a>
+			<a href="javascript:{};" title="Adds this word to the filter list"><i class="fa fa-plus"></i></a>
 		</div>
 
 		<ul id="words-filter" class="words-filter"></ul>
@@ -55,9 +55,9 @@
 			<div class="actor-meta-outer">
 				<div class="repo-langs actor-meta"></div>
 
-				<a class="event-url actor-meta actor-meta-link" href="#" target="_blank"></a>
+				<a class="event-url actor-meta actor-meta-link" href="#" target="_blank" title="See the exact location this word originated from"></a>
 
-				<a class="repo-url actor-meta actor-meta-link" href="#" target="_blank"></a>
+				<a class="repo-url actor-meta actor-meta-link" href="#" target="_blank" title="Visit this repository's home page"></a>
 			</div>
 		</div>
 	</div>

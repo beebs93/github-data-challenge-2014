@@ -709,7 +709,7 @@ ControlPanel = function(){
 		}
 
 		_.forEach(aNewWords, function(sWord){
-			aNewItems.push('<li data-filter-value="' + sWord + '"><i class="fa fa-times"></i> ' + sWord + '</li>');
+			aNewItems.push('<li data-filter-value="' + sWord + '" title="Removes this word from the filter list"><i class="fa fa-times"></i> ' + sWord + '</li>');
 		});
 
 		$wordFilters.append(aNewItems.join(''));
@@ -802,7 +802,7 @@ ControlPanel = function(){
 		}
 
 		_.forEach(aNewLangs, function(oLang){
-			aNewItems.push('<li data-filter-value="' + oLang.value + '" data-filter-status="0">' + oLang.label + '</li>');
+			aNewItems.push('<li data-filter-value="' + oLang.value + '" data-filter-status="0" title="Toggles filtering out this language\'s words">' + oLang.label + '</li>');
 
 			if(oFlags.canAutoDisableLangs){
 				oFilters.langs.push(oLang.value);
@@ -1047,7 +1047,7 @@ ControlPanel = function(){
 				if(!oStat.url.length){
 					sStatContent = '<div class="stat-label stat-item-child">' + sLabel + '</div>';
 				}else{
-					sStatContent = '<a class="stat-link stat-item-child" href="' + oStat.url + '" target="_blank"><div class="stat-label">' + sLabel + '</div></a>';
+					sStatContent = '<a class="stat-link stat-item-child" href="' + oStat.url + '" target="_blank" title="Visit this repository\'s home page"><div class="stat-label">' + sLabel + '</div></a>';
 				}
 
 				$statItem = $('<li class="stat-item" data-stat-type="' + oStatsInfo.type + '" data-stat-label="' + sLabel + '"><div class="stat-bar stat-item-child" style="width:' + nPct + '%"></div>' + sStatContent + '</li>');
