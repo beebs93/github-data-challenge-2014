@@ -77,9 +77,6 @@
 		}
 
 		.remote-control{
-			padding: 0.25em 0.5em;
-			@include box-shadow(0 0 1em 0.25em #e6e4e4);
-			background: #fff;
 			float: left;
 			position: absolute;
 			top: 0.75em;
@@ -88,7 +85,11 @@
 			z-index: 2;
 
 			.control-button{
-				display: none;
+				margin: 0 0.25em;
+				padding: 0.25em 0.5em;
+				@include box-shadow(0 0 1em 0.25em #e6e4e4);
+				background: #fff;
+				display: inline-block;
 				font-size: 1.25em;
 			}
 
@@ -96,8 +97,12 @@
 				color: $rgbaHoverGeneral;
 			}
 
-			.control-button.active-button{
-				display: block;
+			.control-button.toggle-button{
+				display: none;
+			}
+
+			.control-button.toggle-button.active-button{
+				display: inline-block;
 			}
 		}
 

@@ -103,6 +103,15 @@ App = function(oOpts){
 						stage.toggleInspectionMode(true);
 
 						break;
+
+					case 'clear-all':
+						hopper.empty();
+
+						stage.empty();
+
+						cpanel.clearStats();
+
+						break;
 				}
 			})
 			.on('Filter:Languages:Updated', function(e, oData){
@@ -308,6 +317,7 @@ Hopper = function(){
 
 	/**
 	 * Empties the queue
+	 * 
 	 * @return void
 	 *
 	 * @author Brad Beebe
@@ -488,9 +498,9 @@ ControlPanel = function(){
 					languages: oFilters.langs
 				});
 			})
-			.on('click', '#remote-control a', function(e){
+			.on('click', '#remote-control .toggle-button', function(e){
 				var $this = $(this),
-					sAction = $this.data('controlAction');
+					sAction = $this.data('toggleAction');
 
 				$rcButtons
 					.find('a')
@@ -500,6 +510,11 @@ ControlPanel = function(){
 
 				_this.signal.trigger('RemoteControl:Click', {
 					action: sAction
+				});
+			})
+			.on('click', '#remote-control #clear-all', function(e){
+				_this.signal.trigger('RemoteControl:Click', {
+					action: 'clear-all'
 				});
 			})
 			.on('keyup', '#new-word-filter', function(e){
@@ -1461,12 +1476,7 @@ Stage = function(){
 				break;
 
 			case false:
-				$stage
-					.find('.actor')
-					.velocity('stop')
-					.remove();
-
-				aActors = [];
+				this.empty();
 
 				$('body').removeClass('inspection-mode');
 
@@ -1474,6 +1484,23 @@ Stage = function(){
 		}
 
 		oFlags.isInspectionMode = bEnable;
+	};
+
+
+	/**
+	 * Empties the stage's actors
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	this.empty = function(){
+		$stage
+			.find('.actor')
+			.velocity('stop')
+			.remove();
+
+		aActors = [];
 	};
 
 

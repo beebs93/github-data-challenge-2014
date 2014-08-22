@@ -17,9 +17,13 @@
 	</div>
 
 	<div id="remote-control" class="remote-control">
-		<a class="control-button active-button" href="javascript:{}" data-control-action="pause" title="Pauses all animations and shows more detailed information about each word"><i class="fa fa-search"></i></a>
-
-		<a class="control-button" href="javascript:{}" data-control-action="play" title="Resumes the animations and shows only the words"><i class="fa fa-play"></i></a>
+		<a class="toggle-button control-button active-button" href="javascript:{}" data-toggle-action="pause" title="Pauses all animations and shows more detailed information about each word">
+			<i class="fa fa-search"></i>
+		</a><a class="toggle-button control-button" href="javascript:{}" data-toggle-action="play" title="Resumes the animations and shows only the words">
+			<i class="fa fa-play"></i>
+		</a><a id="clear-all" class="clear-queue control-button" href="javascript:{}" title="Clears the current and queued words">
+			<i class="fa fa-trash-o"></i>
+		</a>
 	</div>
 
 	<div class="filter-col">
