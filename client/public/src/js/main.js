@@ -1365,7 +1365,7 @@ Stage = function(){
 					// we want freed actors to propertly reflect their departure
 					// from the stage
 					_this.signal.trigger('Actor:Freed', {
-						actorData: oData
+						actorData: oData,
 						isFilterMatch: false
 					});
 				},
