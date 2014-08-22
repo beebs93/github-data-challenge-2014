@@ -92,6 +92,10 @@
 				font-size: 1.25em;
 			}
 
+			.control-button:hover{
+				color: $rgbaHoverGeneral;
+			}
+
 			.control-button.active-button{
 				display: block;
 			}
