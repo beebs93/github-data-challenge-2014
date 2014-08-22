@@ -2,6 +2,7 @@
 
 var path = require('path'),
 	sAppDir = path.dirname(require.main.filename),
+	fs = require('fs'),
 	_ = require('lodash'),
 	connect = require('connect'),
 	express = require('express'),
@@ -40,7 +41,7 @@ app.use(serveStatic(sAppDir + '/client/public', {
 	maxAge: ms('1d')
 }));
 app.use(function(req, res, next){
-	var pkg = require(sAppDir + '/package.json');
+	var pkg = JSON.parse(fs.readFileSync(sAppDir + '/package.json'));
 
 	_.merge(app.locals, {
 		Config: {
