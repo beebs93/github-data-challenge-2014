@@ -90,6 +90,7 @@ App = function(oOpts){
 						stage.toggleInspectionMode(false);
 
 						cpanel.clearStats();
+						cpanel.updateStatsView();
 
 						nextTick();
 
@@ -110,6 +111,7 @@ App = function(oOpts){
 						stage.empty();
 
 						cpanel.clearStats();
+						cpanel.updateStatsView();
 
 						break;
 				}
