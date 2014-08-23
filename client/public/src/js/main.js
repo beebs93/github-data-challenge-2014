@@ -1257,7 +1257,7 @@ Stage = function(){
 			.removeClass('actor-positioned filter-match')
 			.find('.actor-inner')
 			.removeClass('layer-1 layer-2 layer-2')
-			.find('.event-word, .repo-langs, .event-url, .repo-url')
+			.find('.event-word, .repo-langs, .event-url, .repo-url, .event-date')
 			.html('')
 			.filter('.event-url, .repo-url')
 			.attr('href', '#');
@@ -1366,6 +1366,10 @@ Stage = function(){
 				href: oData.repo.url
 			})
 			.html(oData.repo.name + ' <i class="fa fa-external-link"></i>');
+
+		$actor
+			.find('.event-date')
+			.html(moment(oData.timestamp, 'X').format('dddd, MMMM D, YYYY @ HH:mm:ss ZZ'));
 
 		if(bAnyFilterMatch){
 			$actor.addClass('filter-match');
