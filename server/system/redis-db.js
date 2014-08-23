@@ -19,8 +19,6 @@ redisClient
 		debug.error('Connection error', sLog);
 		debug.error(err, sLog);
 
-		redisClient.end();
-
 		appEvents.emit('App:Redis:Error');
 	})
 	.select(config.db.redis.dbIndex, function(){

@@ -140,10 +140,10 @@ router.get('/', routes.home);
  *****************************************************************************/
 app.listen(config.servers.http.port);
 
-appEvents.on('App:Redis:DatabaseSet', function(){
-	tasks.harvest.start();
-});
-
-appEvents.on('App:GitHubEvents:Harvested', function(aWordEvents){
-	io.emit('App:GitHubEvents:Harvested', aWordEvents);
-});
+appEvents
+	.on('App:Redis:Connected', tasks.harvest.resume)
+	.on('App:Redis:Error', tasks.harvest.stop)
+	.on('App:Redis:DatabaseSet', tasks.harvest.start)
+	.on('App:GitHubEvents:Harvested', function(aWordEvents){
+		io.emit('App:GitHubEvents:Harvested', aWordEvents);
+	});

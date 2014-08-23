@@ -75,7 +75,8 @@ function GithubEventHarvester(){
 
 		oFlags = {
 			isGettingEvents: false,
-			isStopped: true
+			isStopped: true,
+			isPaused: false
 		};
 	}
 
@@ -104,6 +105,41 @@ function GithubEventHarvester(){
 		}
 
 		oFlags.isStopped = false;
+		oFlags.isPaused = false;
+
+		getLatestGlobalEvents();
+	};
+
+
+	/**
+	 * Resumes the harvesting process
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	this.resume = function(){
+		try{
+			if(oFlags.isPaused !== true){
+				throw 'Not currently paused';
+			}
+
+			if(oFlags.isGettingEvents === true){
+				throw 'Still getting global events';
+			}
+
+			if(oFlags.isStopped !== true){
+				throw 'Already started';
+			}
+		}
+		catch(err){
+			debug.warn('Cannot resume: ' + err);
+
+			return;
+		}
+
+		oFlags.isStopped = false;
+		oFlags.isPaused = false;
 
 		getLatestGlobalEvents();
 	};
@@ -129,8 +165,29 @@ function GithubEventHarvester(){
 		}
 
 		oFlags.isStopped = true;
+		oFlags.isPaused = true;
 
 		clearTimeout(oTimers.getEvents);
+	};
+
+
+	/**
+	 * Returns the harvester's current status
+	 * 
+	 * @return string
+	 *
+	 * @author Brad Beebe
+	 */
+	this.getStatus = function(){
+		if(oFlags.isPaused === true){
+			return 'paused';
+		}
+
+		if(oFlags.isStopped === true){
+			return 'stopped';
+		}
+
+		return 'started';
 	};
 
 
