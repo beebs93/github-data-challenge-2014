@@ -544,8 +544,7 @@ ControlPanel = function(){
 				processWordFilterInput();
 
 				return false;
-			})
-			.on('click', '#new-word-filter + a', $.proxy(processWordFilterInput, _this));
+			});
 
 		$langButtons
 			.on('click', 'li', function(e){

@@ -14,11 +14,17 @@ $rgbaHoverGeneral: rgba(0, 0, 0, 0.5);
 
 // Base
 $baseBodyBgColor: #fff;
-$baseFontSize: 16px;
-$baseLineHeight: 1.25;
+$baseFontSize: 12px;
+$baseLineHeight: 1.333;
 $baseFontStack: $fontSansSerif;
 $baseFontWeight: $fontWeightRegular;
 $baseFontColor: #000;
+
+// Typography
+$nonMobileFontSize: 16px;
+$nonMobileLineHeight: 1.25;
+$widescreenFontSize: 24px;
+$widescreenLineHeight: 1.25;
 
 // UI
 $borderRadiusDefault: 0.3125em;
@@ -29,6 +35,6 @@ $tablet-narrow: 640px;
 $tablet: 768px;
 $laptop: 960px;
 $desktop-narrow: 1024px;
-$desktop: 1200px;
 $desktop-wide: 1190px;
+$desktop: 1200px;
 $widescreen: 1600px;

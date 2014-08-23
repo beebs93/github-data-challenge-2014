@@ -33,6 +33,114 @@
 			}
 		}
 
+		.last-event-date{
+			@extend %cpanel-floating-ui;
+			position: absolute;
+			bottom: 1em;
+			left: 50%;
+			@include transform(translateX(-50%));
+			z-index: 2;
+			text-align: center;
+		}
+
+		.event-date-title{
+			
+		}
+
+		.event-date-formatted{
+			font-weight: $fontWeightBold;
+		}
+
+		.filter-col{
+			max-width: 100px;
+			@include breakpoint($mobile-wide){
+				max-width: 200px;
+			}
+			@include breakpoint($tablet-narrow){
+				max-width: 300px;
+			}
+			@include breakpoint($tablet){
+				max-width: 400px;
+			}
+			@include breakpoint($laptop){
+				max-width: 500px;
+			}
+			@include breakpoint($desktop-narrow){
+				max-width: none;
+			}
+			height: 100%;
+			padding: 4em 1em 1em;
+			@include breakpoint($tablet-narrow){
+				padding-top: 1em;
+			}
+			@include box-shadow(0 0 3em 0.25em #fff);
+			position: absolute;
+			top: 0;
+			z-index: 2;
+			overflow: scroll;
+		}
+
+		.filter-col:first-of-type{
+			min-width: 8.125em;
+			left: 0;
+		}
+
+		.filter-col:last-of-type{
+			right: 0;
+		}
+
+		.global-lang-filters{
+			@extend %clearfix;
+		}
+
+		.global-lang-filter{
+			@extend %transparent-glow;
+			width: 50%;
+			padding: 0 0 0.4em;
+			display: inline-block;
+			font-size: 1.5rem;
+			text-align: center;
+		}
+
+		.global-lang-filter:hover{
+			color: $rgbaHoverGeneral;
+		}
+
+		.lang-buttons{
+			@extend %transparent-glow;
+			margin-top: 0.25em;
+			clear: both;
+
+			li{
+				@extend %border-general;
+				margin: 0.5em 0 0;
+				padding: 0.5em;
+				background: #fff;
+				display: block;
+				@include opacity(0);
+				cursor: pointer;
+				word-break: break-word;
+				@include transition(opacity 750ms linear);
+			}
+
+			li:first-child{
+				margin-top: 0;
+			}
+
+			li:hover{
+				@extend %btn-hover-general;
+			}
+
+			li.added{
+				@include opacity(1);
+			}
+
+			li.active-filter{
+				background: #000;
+				color: #fff;
+			}
+		}
+
 		.fitler-input-field{
 			@extend %transparent-glow;
 		}
@@ -124,98 +232,25 @@
 		.stat-link{
 			display: block;
 		}
-
-		.last-event-date{
-			@extend %cpanel-floating-ui;
-			position: absolute;
-			bottom: 1em;
-			left: 50%;
-			@include transform(translateX(-50%));
-			z-index: 2;
-			text-align: center;
-		}
-
-		.event-date-title{
-			
-		}
-
-		.event-date-formatted{
-			font-weight: $fontWeightBold;
-		}
-
-		.filter-col{
-			height: 100%;
-			padding: 1em;
-			@include box-shadow(0 0 3em 0.25em #fff);
-			position: absolute;
-			top: 0;
-			z-index: 2;
-			overflow: scroll;
-		}
-
-		.filter-col:first-of-type{
-			min-width: 8.125em;
-			left: 0;
-		}
-
-		.filter-col:last-of-type{
-			right: 0;
-		}
-
-		.global-lang-filters{
-			@extend %clearfix;
-		}
-
-		.global-lang-filter{
-			@extend %transparent-glow;
-			width: 50%;
-			padding: 0.4em 0;
-			display: inline-block;
-			font-size: 1.5rem;
-			text-align: center;
-		}
-
-		.global-lang-filter:hover{
-			color: $rgbaHoverGeneral;
-		}
-
-		.lang-buttons{
-			@extend %transparent-glow;
-			margin-top: 0.25em;
-			clear: both;
-
-			li{
-				@extend %border-general;
-				margin: 0.5em 0 0;
-				padding: 0.5em;
-				background: #fff;
-				display: block;
-				cursor: pointer;
-				@include opacity(0);
-				@include transition(opacity 750ms linear);
-			}
-
-			li:first-child{
-				margin-top: 0;
-			}
-
-			li:hover{
-				@extend %btn-hover-general;
-			}
-
-			li.added{
-				@include opacity(1);
-			}
-
-			li.active-filter{
-				background: #000;
-				color: #fff;
-			}
-		}
 	}
 
 	.stage{
-		max-width: 1000px;
+		max-width: 200px;
+		@include breakpoint($mobile-wide){
+			max-width: 300px;
+		}
+		@include breakpoint($tablet-narrow){
+			max-width: 400px;
+		}
+		@include breakpoint($desktop-narrow){
+			max-width: 640px;
+		}
+		@include breakpoint($desktop){
+			max-width: 800px;
+		}
+		@include breakpoint($widescreen){
+			max-width: 1200px;
+		}
 		height: 100%;
 		margin: 0 auto;
 		position: relative;
@@ -306,7 +341,6 @@
 	}
 
 	.stage{
-		max-width: 500px;
 		height: auto;
 		padding-top: 4em;
 		padding-bottom: 2em;

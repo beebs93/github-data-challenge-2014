@@ -1,6 +1,14 @@
 html{
 	font: #{$baseFontSize}/#{$baseLineHeight} $baseFontStack;
 	font-weight: $baseFontWeight;
+	@include breakpoint($tablet-narrow){
+		font-size: #{$nonMobileFontSize};
+		line-height: #{$nonMobileLineHeight};
+	}
+	@include breakpoint($widescreen){
+		font-size: #{$widescreenFontSize};
+		line-height: #{$widescreenLineHeight};
+	}
 }
 
 body{
