@@ -98,6 +98,7 @@ switch(process.env.NODE_ENV){
 		break;
 }
 
+// Load the oauth credentials file and merge it into the current config object
 try{
 	oauth = require(sAppDir + '/oauth.json');
 }
