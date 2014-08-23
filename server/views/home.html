@@ -4,6 +4,22 @@
 
 {% block templateContent %}
 <div id="control-panel" class="control-panel">
+	<div id="remote-control" class="remote-control">
+		<a class="toggle-button control-button active-button" href="javascript:{}" data-toggle-action="pause" title="Pauses all animations and shows more detailed information about each word">
+			<i class="fa fa-search"></i>
+		</a><a class="toggle-button control-button" href="javascript:{}" data-toggle-action="play" title="Resumes the animations and shows only the words">
+			<i class="fa fa-play"></i>
+		</a><a id="clear-all" class="clear-queue control-button" href="javascript:{}" title="Clears the current and queued words">
+			<i class="fa fa-trash-o"></i>
+		</a>
+	</div>
+
+	<div id="last-event-date" class="last-event-date">
+		<div class="event-date-title">Last Event Date/Time</div>
+
+		<div class="event-date-formatted">N/A</div>		
+	</div>
+
 	<div class="filter-col">
 		<div class="global-lang-filters">
 			<a class="global-lang-filter" href="javascript:{}" data-filter-action="all" title="Filters out all languages and auto-filters any new ones">
@@ -14,16 +30,6 @@
 		</div>
 
 		<ul id="lang-buttons" class="lang-buttons"></ul>
-	</div>
-
-	<div id="remote-control" class="remote-control">
-		<a class="toggle-button control-button active-button" href="javascript:{}" data-toggle-action="pause" title="Pauses all animations and shows more detailed information about each word">
-			<i class="fa fa-search"></i>
-		</a><a class="toggle-button control-button" href="javascript:{}" data-toggle-action="play" title="Resumes the animations and shows only the words">
-			<i class="fa fa-play"></i>
-		</a><a id="clear-all" class="clear-queue control-button" href="javascript:{}" title="Clears the current and queued words">
-			<i class="fa fa-trash-o"></i>
-		</a>
 	</div>
 
 	<div class="filter-col">
@@ -76,7 +82,8 @@ var app,
 	oOpts = {
 		socketUrl: url('protocol') + '://' + url('domain') + ':{{ Config.socketio.port }}',
 		statsDelay: 1000,
-		tickDelay: 100
+		tickDelay: 100,
+		lastEventDateDelay: 2500
 	};
 
 app = new App(oOpts);

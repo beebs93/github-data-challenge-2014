@@ -68,7 +68,8 @@ App = function(oOpts){
 
 		oDelays = {
 			tick: oOpts.tickDelay,
-			stats: oOpts.statsDelay
+			stats: oOpts.statsDelay,
+			lastEventDate: oOpts.lastEventDateDelay
 		};
 
 		oTimers = {
@@ -77,6 +78,7 @@ App = function(oOpts){
 		};
 
 		_this.renderMiniStats = _.throttle(cpanel.updateStatsView.bind(cpanel), oDelays.stats);
+		_this.renderLastEventDate = _.throttle(cpanel.updateLastEventDate.bind(cpanel), oDelays.lastEventDate);
 
 		cpanel.signal
 			.on('RemoteControl:Click', function(e, oData){
@@ -112,6 +114,7 @@ App = function(oOpts){
 
 						cpanel.clearStats();
 						cpanel.updateStatsView();
+						cpanel.updateLastEventDate(null);
 
 						break;
 				}
@@ -140,6 +143,7 @@ App = function(oOpts){
 				cpanel.addStats(aStats);
 
 				_this.renderMiniStats();
+				_this.renderLastEventDate(oData.actorData.timestamp);
 			}).
 			on('Actor:Freed', function(e, oData){
 				var aStats;
@@ -382,6 +386,7 @@ ControlPanel = function(){
 		$rcButtons,
 		$wordFilters,
 		$miniStats,
+		$lastEventDate,
 		oButtons,
 		oFilters,
 		oStats,
@@ -452,6 +457,14 @@ ControlPanel = function(){
 
 		if(!$miniStats || $miniStats.length !== 1){
 			console.error('Missing mini stats container');
+
+			return;
+		}
+
+		$lastEventDate = $cpanel.find('#last-event-date');
+
+		if(!$lastEventDate || $lastEventDate.length !== 1){
+			console.error('Missing last event date container');
 
 			return;
 		}
@@ -1076,6 +1089,31 @@ ControlPanel = function(){
 				});
 			});
 		});
+	};
+
+
+
+	this.updateLastEventDate = function(unixTimestamp){
+		var dLastUpdated,	
+			aDates = [];
+
+		dLastUpdated = moment(unixTimestamp, 'X');
+
+		if(!dLastUpdated.isValid()){
+			aDates = [
+				'N/A',
+				'N/A'
+			];
+		}else{
+			aDates = [
+				dLastUpdated.format('dddd, MMMM D, YYYY'),
+				dLastUpdated.format('HH:mm:ss ZZ')
+			];
+		}
+
+		$lastEventDate
+			.find('.event-date-formatted')
+			.html(aDates.join('<br>'));
 	};
 
 

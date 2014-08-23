@@ -61,3 +61,10 @@
 	@include box-shadow(0 0 3em 0.25em #fff);
 	background: rgba(#fff, 0.6);
 }
+
+%cpanel-floating-ui{
+	margin: 0 0.25em;
+	padding: 0.25em 0.5em;
+	@include box-shadow(0 0 1em 0.25em $colorFloatShadow);
+	background: #fff;
+}
