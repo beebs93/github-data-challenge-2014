@@ -7,6 +7,8 @@ Description
 --------------
 An application that represents real-time user-generated messages retrieved from the public [GitHub Events API](https://developer.github.com/v3/activity/events/) broken down by word and the programming language(s) of its originating GitHub repository.
 
+![](https://raw.githubusercontent.com/beebs93/github-data-challenge-2014/master/client/public/img/screenshots/g-entry-1.jpg)
+
 Requirements
 --------------
 - `git v1.8.5.2+`
