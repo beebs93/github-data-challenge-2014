@@ -5,7 +5,7 @@ Entry for the [Third Annual GitHub Data Challenge](https://github.com/blog/1864-
 
 Description
 --------------
-An application that represents real-time user-generated messages retrieved from the public [GitHub Events API](https://developer.github.com/v3/activity/events/) broken down by word and the programming language(s) of the originating GitHub repository.
+An application that represents real-time user-generated messages retrieved from the public [GitHub Events API](https://developer.github.com/v3/activity/events/) broken down by word and the programming language(s) of its originating GitHub repository.
 
 Requirements
 --------------
@@ -59,6 +59,73 @@ node index.js
 ```
 
 - Load [http://127.0.0.1:3000](http://127.0.0.1:3000) in the latest version of any browser
+
+Configuration
+--------------
+The main `Config` class located in `server/system/config.js` contains the base application settings.
+
+Each environment (based on the current `process.env.NODE_ENV` variable) extends this class and can overwrite whatever base options with their own.
+
+- Create a new child `Config` class
+```javascript
+function FooConfig(){
+	_.merge(this, {
+		db: {
+			redis: {
+				dbIndex: 10,
+				host: 'another-endpoint.cache.amazonaws.com'
+			}
+		},
+		servers: {
+			http: {
+				port: 9000
+			},
+			socketio: {
+				port: 9020
+			}
+		}
+	});
+}
+
+FooConfig.prototype = new Config();
+```
+- Add the new environment to the existing `switch` statement at the bottom
+```javascript
+switch(process.env.NODE_ENV){
+	default:
+		process.env.NODE_ENV = 'default';
+
+		config = new DefaultConfig();
+
+		break;
+	
+	case 'foo':
+		config = new FooConfig();
+		
+		break;
+}
+```
+- Add the new environment's OAuth credientials to your `oauth.json` file
+```json
+{
+	"default": {
+		"github": {
+			"oauth": {
+				"clientId": "123abc456def",
+				"clientSecret": "fed654cba321"
+			}
+		}
+	},
+	"foo": {
+		"github": {
+			"oauth": {
+				"clientId": "789ghi101112jkl",
+				"clientSecret": "lkj211101ihg987"
+			}
+		}
+	}
+}
+```
 
 License
 --------------
