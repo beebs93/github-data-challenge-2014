@@ -9,6 +9,8 @@ An application that represents real-time user-generated messages retrieved from 
 
 ![](https://raw.githubusercontent.com/beebs93/github-data-challenge-2014/master/client/public/img/screenshots/g-entry-1.jpg)
 
+![](https://raw.githubusercontent.com/beebs93/github-data-challenge-2014/master/client/public/img/screenshots/g-entry-2.jpg)
+
 Requirements
 --------------
 - `git v1.8.5.2+`
