@@ -67,9 +67,10 @@ App = function(oOpts){
 		socket = io(oOpts.socketUrl);
 
 		oDelays = {
-			tick: oOpts.tickDelay,
-			stats: oOpts.statsDelay,
-			lastEventDate: oOpts.lastEventDateDelay
+			tick: oOpts.delays.tick,
+			stats: oOpts.delays.stats,
+			lastEventDate: oOpts.delays.lastEventDate,
+			gc: oOpts.delays.gc
 		};
 
 		oTimers = {
@@ -79,6 +80,7 @@ App = function(oOpts){
 
 		_this.renderMiniStats = _.throttle(cpanel.updateStatsView.bind(cpanel), oDelays.stats);
 		_this.renderLastEventDate = _.throttle(cpanel.updateLastEventDate.bind(cpanel), oDelays.lastEventDate);
+		_this.runGC = _.throttle(stage.gc.bind(stage), oDelays.gc);
 
 		cpanel.signal
 			.on('RemoteControl:Click', function(e, oData){
@@ -205,6 +207,8 @@ App = function(oOpts){
 			aRepoLangs,
 			aValidLangs,
 			aLangButtons = [];
+
+		_this.runGC();
 
 		if(stage.isInspectionModeActive()){
 			return;
@@ -1092,7 +1096,14 @@ ControlPanel = function(){
 	};
 
 
-
+	/**
+	 * Updates the last event date text
+	 *
+	 * @param mixed unixTimestamp - A string/integer UNIX timestamp in seconds (optional)
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
 	this.updateLastEventDate = function(unixTimestamp){
 		var dLastUpdated,	
 			aDates = [];
@@ -1131,7 +1142,6 @@ Stage = function(){
 	var _this = this,
 		$stage,
 		$actorTpl,
-		aActors,
 		oDimensions,
 		oFlags,
 		oTimers;
@@ -1149,8 +1159,6 @@ Stage = function(){
 
 		_this.signal = $({});
 		
-		aActors = [];
-
 		oDimensions = {
 			stage: {
 				width: null,
@@ -1214,32 +1222,18 @@ Stage = function(){
 
 
 	/**
-	 * Finds (or creates) a free actor element
+	 * Creates a new actor element
 	 *
 	 * @return object - jQuery element
 	 *
 	 * @author Brad Beebe
 	 */
-	function getFreeActor(){
+	function getNewActor(){
 		var $actor;
 
-		$actor = _.find(aActors, function($el){
-			if($el._isFree !== true){
-				return false;
-			}
+		$actor = $actorTpl.clone(false);
 
-			$el._isFree = false;
-
-			return true;
-		});
-
-		if(_.isUndefined($actor)){
-			$actor = $actorTpl.clone(false);
-
-			aActors.push($actor);
-
-			$stage.append($actor);
-		}
+		$stage.append($actor);
 
 		clearActor($actor);
 
@@ -1267,8 +1261,6 @@ Stage = function(){
 			.html('')
 			.filter('.event-url, .repo-url')
 			.attr('href', '#');
-
-		$actor._isFree = false;
 	}
 
 
@@ -1348,7 +1340,7 @@ Stage = function(){
 			bAnyFilterMatch = _.indexOf(aWordFilters, oData.word.toLowerCase()) !== -1;
 		}
 
-		$actor = getFreeActor();
+		$actor = getNewActor();
 
 		$actor
 			.data({
@@ -1399,7 +1391,7 @@ Stage = function(){
 				translateY: [(oDimensions.stage.height + (iHeight * 2)), -iHeight]
 			},{
 				complete: function(){
-					$actor._isFree = true;
+					$actor.addClass('mark-for-gc');
 
 					// While we prevent new actors from increased the mini stats
 					// we want freed actors to propertly reflect their departure
@@ -1438,13 +1430,14 @@ Stage = function(){
 			iNumLangMatchList = aLangMatchList.length,
 			iNumWordsMatchList = aWordMatchList.length;
 
-		_.forEach(aActors, function($el){
-			var oWordEvent = $el.data('wordEvent'),
+		$stage.find('.actor:not(.mark-for-gc)').each(function(i, el){
+			var $el = $(el),
+				oWordEvent = $el.data('wordEvent'),
 				aLangDiff,
 				bMatchesLangFilter = false,
 				bMatchesWordFilter = false;
 
-			if($el._isFree === true || !_.isPlainObject(oWordEvent)){
+			if(!_.isPlainObject(oWordEvent)){
 				return true;
 			}
 
@@ -1504,15 +1497,7 @@ Stage = function(){
 
 				$actors.detach().appendTo($stage);
 
-				aActors = _.filter(aActors, function($el){
-					if($el._isFree === true){
-						$el.remove();
-
-						return false;
-					}
-
-					return true;
-				});
+				this.gc();
 
 				$('body').addClass('inspection-mode');
 
@@ -1542,8 +1527,20 @@ Stage = function(){
 			.find('.actor')
 			.velocity('stop')
 			.remove();
+	};
 
-		aActors = [];
+
+	/**
+	 * Clears out any actors marked for garbage collection
+	 * 
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 */
+	this.gc = function(){
+		$stage
+			.find('.actor.mark-for-gc')
+			.remove();
 	};
 
 

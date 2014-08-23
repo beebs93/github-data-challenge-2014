@@ -81,9 +81,12 @@ jQuery(function(){
 var app,
 	oOpts = {
 		socketUrl: url('protocol') + '://' + url('domain') + ':{{ Config.socketio.port }}',
-		statsDelay: 1000,
-		tickDelay: 100,
-		lastEventDateDelay: 2500
+		delays: {
+			stats: 1000,
+			tick: 100,
+			lastEventDate: 2500,
+			gc: 30000
+		}
 	};
 
 app = new App(oOpts);
